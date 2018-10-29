@@ -29,6 +29,7 @@
 
 #include "Mario.h"
 #include "Brick.h"
+#include "BackGround.h"
 #include "Goomba.h"
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
@@ -43,11 +44,15 @@
 #define ID_TEX_MARIO 0
 #define ID_TEX_ENEMY 10
 #define ID_TEX_MISC 20
+#define ID_TEX_BACKGROUND 30
 
 CGame *game;
 
 CMario *simon;
 //CGoomba *goomba;
+CBackGround *bacgground;
+
+
 
 vector<LPGAMEOBJECT> objects;
 
@@ -65,12 +70,15 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	switch (KeyCode)
 	{
+	case DIK_Z:
+		simon->SetState(SIMON_STATE_ATTACT_LEFT);
+		break;
 	case DIK_SPACE:
-		simon->SetState(MARIO_STATE_JUMP);
+		simon->SetState(SIMON_STATE_JUMP);
 		break;
 	case DIK_A: // reset
-		simon->SetState(MARIO_STATE_IDLE);
-
+		simon->SetState(SIMON_STATE_IDLE);
+		//cho simon roi xuong 
 		simon->SetPosition(50.0f,0.0f);
 		simon->SetSpeed(0, 0);
 		break;
@@ -85,13 +93,15 @@ void CSampleKeyHander::OnKeyUp(int KeyCode)
 void CSampleKeyHander::KeyState(BYTE *states)
 {
 	// disable control key when Mario die 
-	if (simon->GetState() == MARIO_STATE_DIE) return;
+	if (simon->GetState() == SIMON_STATE_DIE) return;
 	if (game->IsKeyDown(DIK_RIGHT))
-		simon->SetState(MARIO_STATE_WALKING_RIGHT);
+		simon->SetState(SIMON_STATE_WALKING_RIGHT);
 	else if (game->IsKeyDown(DIK_LEFT))
-		simon->SetState(MARIO_STATE_WALKING_LEFT);
+		simon->SetState(SIMON_STATE_WALKING_LEFT);
+	else if(game->IsKeyDown(DIK_DOWN))
+		simon->SetState(SIMON_STATE_SITDOWN);
 	else
-		simon->SetState(MARIO_STATE_IDLE);
+		simon->SetState(SIMON_STATE_IDLE);
 }
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -120,7 +130,8 @@ void LoadResources()
 	textures->Add(ID_TEX_MARIO, L"textures\\simon.png", D3DCOLOR_XRGB(0, 128, 128));
 	textures->Add(ID_TEX_MISC, L"textures\\misc.png", D3DCOLOR_XRGB(176, 224, 248));
 	textures->Add(ID_TEX_ENEMY, L"textures\\enemies.png", D3DCOLOR_XRGB(3, 26, 110));
-
+	
+	textures->Add(ID_TEX_BACKGROUND, L"textures\\Level 1_Entrance.png", D3DCOLOR_XRGB(0, 128, 128));
 
 	textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 
@@ -134,13 +145,13 @@ void LoadResources()
 	sprites->Add(10003, 682, 9, 696, 40, texSimon);
 	sprites->Add(10002, 708, 8, 721, 39, texSimon);		// walk
 	sprites->Add(10001, 734, 9, 750, 39, texSimon);	// idle right
-	//sprites->Add(10004, 652, 15, 668, 42, texSimon);	//ngoi phai
+	sprites->Add(10004, 652, 9, 668, 42, texSimon);	//ngoi phai
 
 
 	sprites->Add(10011, 80, 10, 97, 40, texSimon);		// idle left
 	sprites->Add(10012, 109, 9, 121, 39, texSimon);		// walk
 	sprites->Add(10013, 134, 9, 150, 40, texSimon);
-	//sprites->Add(10014, 163, 17, 180, 40, texSimon);//ngoi trai
+	sprites->Add(10014, 163, 9, 180, 40, texSimon);//ngoi trai
 	
 	sprites->Add(40000, 60, 50, 85, 85, texSimon);	//attact left
 	sprites->Add(40001, 106, 50, 127, 85, texSimon);
@@ -153,6 +164,11 @@ void LoadResources()
 
 	LPDIRECT3DTEXTURE9 texMisc = textures->Get(ID_TEX_MISC);
 	sprites->Add(20001, 408, 225, 424, 241, texMisc);
+
+	LPDIRECT3DTEXTURE9 texbBG = textures->Get(ID_TEX_BACKGROUND);
+	sprites->Add(30001,0 , 0,770, 185, texMisc);
+
+
 
 	LPDIRECT3DTEXTURE9 texEnemy = textures->Get(ID_TEX_ENEMY);
 	sprites->Add(30001, 5, 14, 21, 29, texEnemy);
@@ -168,24 +184,25 @@ void LoadResources()
 	ani->Add(10001);
 	ani->Add(10002);
 	ani->Add(10003);
+	
 	animations->Add(500, ani);
 
 	ani = new CAnimation(100);	// attact left
 	ani->Add(40000);
 	ani->Add(40001);
 	ani->Add(40002);
-	animations->Add(600, ani);
+	animations->Add(610, ani);
 	
 	ani = new CAnimation(100);	// attact right
 	ani->Add(40010);
 	ani->Add(40011);
 	ani->Add(40012);
-	animations->Add(601, ani);
+	animations->Add(611, ani);
 
 
-	//ani = new CAnimation(100);	// ngoi phai
-	//ani->Add(10004);
-	//animations->Add(402, ani);
+	ani = new CAnimation(100);	// ngoi phai
+	ani->Add(10004);
+	animations->Add(402, ani);
 
 	ani = new CAnimation(100);	// idle big left
 	ani->Add(10011);
@@ -197,13 +214,18 @@ void LoadResources()
 	ani->Add(10013);
 	animations->Add(501, ani);
 
-	//ani = new CAnimation(100);	// ngoi trai
-	//ani->Add(10014);
-	//animations->Add(403, ani);
+	ani = new CAnimation(100);	// ngoi trai
+	ani->Add(10014);
+	animations->Add(403, ani);
 
 	ani = new CAnimation(100);		// brick
 	ani->Add(20001);
 	animations->Add(601, ani);
+
+	ani = new CAnimation(100);		// background
+	ani->Add(30001);
+	animations->Add(701, ani);
+
 
 	//ani = new CAnimation(300);		// Goomba walk
 	//ani->Add(30001);
@@ -222,12 +244,22 @@ void LoadResources()
 	simon->AddAnimation(500);		// walk right          2     
 	simon->AddAnimation(501);		// walk left			3
 	
-	simon->AddAnimation(600);		//attact left	4
+	simon->AddAnimation(611);		//attact right	5
+	simon->AddAnimation(610);		//attact left	4
+	simon->AddAnimation(402);		// ngoi phai  
+	simon->AddAnimation(403);		// ngoi trai  
+	
 	//simon->AddAnimation(599);		// died                 6
-	simon->AddAnimation(601);		//attact right	5
+	
+
 
 	simon->SetPosition(50.0f, 0);
 	objects.push_back(simon);
+
+	bacgground = new CBackGround();
+	bacgground->SetPosition(0.f, 0);
+	objects.push_back(bacgground);
+
 
 	for (int i = 0; i < 5; i++)
 	{

@@ -45,6 +45,7 @@ public:
 
 	int nx;	 
 
+
 	int state;
 
 	DWORD dt; 
