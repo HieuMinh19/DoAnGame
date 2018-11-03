@@ -27,33 +27,31 @@
 #include "GameObject.h"
 #include "Textures.h"
 
-#include "Mario.h"
+#include "Simon.h"
 #include "Brick.h"
-#include "BackGround.h"
 #include "Goomba.h"
+#include "Fire.h"
+#include "BackGround.h"
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"04 - Collision"
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
 
 #define MAX_FRAME_RATE 120
 
-#define ID_TEX_MARIO 0
-#define ID_TEX_ENEMY 10
-#define ID_TEX_MISC 20
-#define ID_TEX_BACKGROUND 30
+#define ID_TEX_SIMON		0
+#define ID_TEX_ENEMY		10
+#define ID_TEX_MISC			20
+#define ID_TEX_BACKGROUND	30
+#define ID_TEX_FIRE			40
 
 CGame *game;
 
-CMario *simon;
-//CGoomba *goomba;
-CBackGround *bacgground;
+CSimon *simon;
 
-
-
+CBackGround *background;
+CFire *fire;
 vector<LPGAMEOBJECT> objects;
 
 class CSampleKeyHander: public CKeyEventHandler
@@ -71,7 +69,7 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_Z:
-		simon->SetState(SIMON_STATE_ATTACT_LEFT);
+		simon->SetState(SIMON_STATE_ATTACT);
 		break;
 	case DIK_SPACE:
 		simon->SetState(SIMON_STATE_JUMP);
@@ -98,10 +96,10 @@ void CSampleKeyHander::KeyState(BYTE *states)
 		simon->SetState(SIMON_STATE_WALKING_RIGHT);
 	else if (game->IsKeyDown(DIK_LEFT))
 		simon->SetState(SIMON_STATE_WALKING_LEFT);
-	else if(game->IsKeyDown(DIK_DOWN))
-		simon->SetState(SIMON_STATE_SITDOWN);
 	else
 		simon->SetState(SIMON_STATE_IDLE);
+	if(game->IsKeyDown(DIK_DOWN))
+		simon->SetState(SIMON_STATE_SITDOWN);
 }
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -113,7 +111,6 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
-
 	return 0;
 }
 
@@ -127,33 +124,30 @@ void LoadResources()
 {
 	CTextures * textures = CTextures::GetInstance();
 
-	textures->Add(ID_TEX_MARIO, L"textures\\simon.png", D3DCOLOR_XRGB(0, 128, 128));
-	textures->Add(ID_TEX_MISC, L"textures\\misc.png", D3DCOLOR_XRGB(176, 224, 248));
+	textures->Add(ID_TEX_SIMON, L"textures\\simon.png", D3DCOLOR_XRGB(0, 128, 128));
+	textures->Add(ID_TEX_MISC, L"textures\Resources\ground\\2.png", D3DCOLOR_XRGB(176, 224, 248));
 	textures->Add(ID_TEX_ENEMY, L"textures\\enemies.png", D3DCOLOR_XRGB(3, 26, 110));
-	
-	textures->Add(ID_TEX_BACKGROUND, L"textures\\Level 1_Entrance.png", D3DCOLOR_XRGB(0, 128, 128));
-
+	textures->Add(ID_TEX_BACKGROUND, L"textures\\Level_1_Entrance.png", D3DCOLOR_XRGB(0, 128, 128));
 	textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
-
+	textures->Add(ID_TEX_FIRE, L"textures\\fire.png", D3DCOLOR_XRGB(255, 0, 255));
 
 	CSprites * sprites = CSprites::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
 
-	LPDIRECT3DTEXTURE9 texSimon = textures->Get(ID_TEX_MARIO);
-
+	LPDIRECT3DTEXTURE9 texSimon = textures->Get(ID_TEX_SIMON);
 	// big
 	sprites->Add(10003, 682, 9, 696, 40, texSimon);
 	sprites->Add(10002, 708, 8, 721, 39, texSimon);		// walk
-	sprites->Add(10001, 734, 9, 750, 39, texSimon);	// idle right
-	sprites->Add(10004, 652, 9, 668, 42, texSimon);	//ngoi phai
+	sprites->Add(10001, 734, 9, 750, 39, texSimon);		// idle right
+	sprites->Add(10004, 652, 9, 668, 42, texSimon);		//ngoi phai
 
 
 	sprites->Add(10011, 80, 10, 97, 40, texSimon);		// idle left
 	sprites->Add(10012, 109, 9, 121, 39, texSimon);		// walk
 	sprites->Add(10013, 134, 9, 150, 40, texSimon);
-	sprites->Add(10014, 163, 9, 180, 40, texSimon);//ngoi trai
+	sprites->Add(10014, 163, 9, 180, 40, texSimon);		//ngoi trai
 	
-	sprites->Add(40000, 60, 50, 85, 85, texSimon);	//attact left
+	sprites->Add(40000, 60, 50, 85, 85, texSimon);		//attact left
 	sprites->Add(40001, 106, 50, 127, 85, texSimon);
 	sprites->Add(40002, 150, 50, 177, 85, texSimon);
 
@@ -163,12 +157,7 @@ void LoadResources()
 
 
 	LPDIRECT3DTEXTURE9 texMisc = textures->Get(ID_TEX_MISC);
-	sprites->Add(20001, 408, 225, 424, 241, texMisc);
-
-	LPDIRECT3DTEXTURE9 texbBG = textures->Get(ID_TEX_BACKGROUND);
-	sprites->Add(30001,0 , 0,770, 185, texMisc);
-
-
+	sprites->Add(20001, 1, 1, 30, 30, texMisc);
 
 	LPDIRECT3DTEXTURE9 texEnemy = textures->Get(ID_TEX_ENEMY);
 	sprites->Add(30001, 5, 14, 21, 29, texEnemy);
@@ -222,62 +211,44 @@ void LoadResources()
 	ani->Add(20001);
 	animations->Add(601, ani);
 
-	ani = new CAnimation(100);		// background
-	ani->Add(30001);
-	animations->Add(701, ani);
-
-
-	//ani = new CAnimation(300);		// Goomba walk
-	//ani->Add(30001);
-	//ani->Add(30002);
-	//animations->Add(701, ani);
-
-	//ani = new CAnimation(1000);		// Goomba dead
-	//ani->Add(30003);
-	//animations->Add(702, ani);
-
-	simon = new CMario();
+	simon = new CSimon();
 	simon->AddAnimation(400);		// idle right          0
-	simon->AddAnimation(401);		// idle left           1 
-	//simon->AddAnimation(402);		// ngoi phai           
-	//simon->AddAnimation(403);		// ngoi trai              
+	simon->AddAnimation(401);		// idle left           1            
 	simon->AddAnimation(500);		// walk right          2     
 	simon->AddAnimation(501);		// walk left			3
-	
+
 	simon->AddAnimation(611);		//attact right	5
 	simon->AddAnimation(610);		//attact left	4
 	simon->AddAnimation(402);		// ngoi phai  
 	simon->AddAnimation(403);		// ngoi trai  
 	
+	// background
+	LPDIRECT3DTEXTURE9 texBG = textures->Get(ID_TEX_BACKGROUND);
+	sprites->Add(70010, 0, 0, 770, 185, texBG);
+	background = new CBackGround();
+	ani = new CAnimation(100);		
+	ani->Add(70010);
+	animations->Add(701, ani);
+	background->AddAnimation(701);
+	//background->SetPosition(0.f, 0);
+	objects.push_back(background);
+
+	//add fire enemy
+	/*LPDIRECT3DTEXTURE9 texFire = textures->Get(ID_TEX_FIRE);
+	sprites->Add(4001, 0, 3, 32, 63, texFire);
+	sprites->Add(4002, 0, 33, 63, 63, texBG);
+	fire = new CFire();
+	ani = new CAnimation(100);
+	ani->Add(4001);
+	ani->Add(4002);
+	animations->Add(40, ani);
+	fire->AddAnimation(40);
+	fire->SetPosition(20.0f, 140);
+	objects.push_back(fire);
+*/
 	//simon->AddAnimation(599);		// died                 6
-	
-
-
 	simon->SetPosition(50.0f, 0);
 	objects.push_back(simon);
-
-	bacgground = new CBackGround();
-	bacgground->SetPosition(0.f, 0);
-	objects.push_back(bacgground);
-
-
-	for (int i = 0; i < 5; i++)
-	{
-		CBrick *brick = new CBrick();
-		brick->AddAnimation(601);
-		brick->SetPosition(100 + i * 48.0f, 74);
-		objects.push_back(brick);
-
-		brick = new CBrick();
-		brick->AddAnimation(601);
-		brick->SetPosition(100 + i * 48.0f, 90);
-		objects.push_back(brick);
-
-		brick = new CBrick();
-		brick->AddAnimation(601);
-		brick->SetPosition(84 + i * 48.0f, 90);
-		objects.push_back(brick);
-	}
 
 	//khoi tao hang gach ngang
 	for (int i = 0; i < 30; i++)
@@ -287,18 +258,7 @@ void LoadResources()
 		brick->SetPosition(0 + i * 16.0f, 150);
 		objects.push_back(brick);
 	}
-
-	// and Goombas 
-	//for (int i = 0; i < 5; i++)//s? lu?ng goomba xu?t hi?n
-	//{
-	//	goomba = new CGoomba();
-	//	goomba->AddAnimation(701);
-	//	goomba->AddAnimation(702);
-	//	goomba->SetPosition(200 + i * 60, 135);
-	//	goomba->SetState(GOOMBA_STATE_WALKING);//
-	//	objects.push_back(goomba);
-	//}
-
+	
 }
 
 /*
@@ -307,7 +267,7 @@ void LoadResources()
 */
 void Update(DWORD dt)
 {
-	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
+	// We know that Simon is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 	vector<LPGAMEOBJECT> coObjects;
 	for (int i = 1; i < objects.size(); i++)
@@ -334,16 +294,15 @@ void Render()
 	{
 		// Clear back buffer with a color
 		d3ddv->ColorFill(bb, NULL, BACKGROUND_COLOR);
-
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
-
-		for (int i = 0; i < objects.size(); i++)
-			objects[i]->Render();
-
+		for (int i = 0; i < objects.size(); i++) {
+			float x = simon->x;
+			float y = 0;
+			objects[i]->Render(x, y);
+		}
 		spriteHandler->End();
 		d3ddv->EndScene();
 	}
-
 	// Display back buffer content to the screen
 	d3ddv->Present(NULL, NULL, NULL, NULL);
 }

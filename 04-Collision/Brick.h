@@ -7,6 +7,6 @@
 class CBrick : public CGameObject
 {
 public:
-	virtual void Render();
+	virtual void Render(float &x_cam, float &y_cam);
 	virtual void GetBoundingBox(float &l, float &t, float &r, float &b);
 };

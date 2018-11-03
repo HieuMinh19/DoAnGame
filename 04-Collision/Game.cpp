@@ -24,6 +24,8 @@ void CGame::Init(HWND hWnd)
 	d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;
 	d3dpp.BackBufferCount = 1;
 
+	RECT camera;
+
 	RECT r;
 	GetClientRect(hWnd, &r);	// retrieve Window width & height 
 

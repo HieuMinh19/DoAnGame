@@ -1,8 +1,8 @@
 #include "Brick.h"
 
-void CBrick::Render()
+void CBrick::Render(float &x_cam, float &y_cam)
 {
-	animations[0]->Render(x, y);
+	animations[0]->Render(x-x_cam, y-y_cam);
 	//RenderBoundingBox();
 }
 
