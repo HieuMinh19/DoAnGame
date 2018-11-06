@@ -39,6 +39,7 @@
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
 
 #define MAX_FRAME_RATE 120
+#define Y_SOILD 150			//y position of enemy in the ground
 
 #define ID_TEX_SIMON		0
 #define ID_TEX_ENEMY		10
@@ -125,8 +126,8 @@ void LoadResources()
 	CTextures * textures = CTextures::GetInstance();
 
 	textures->Add(ID_TEX_SIMON, L"textures\\simon.png", D3DCOLOR_XRGB(0, 128, 128));
-	textures->Add(ID_TEX_MISC, L"textures\Resources\ground\\2.png", D3DCOLOR_XRGB(176, 224, 248));
-	textures->Add(ID_TEX_ENEMY, L"textures\\enemies.png", D3DCOLOR_XRGB(3, 26, 110));
+	/*textures->Add(ID_TEX_MISC, L"textures\Resources\ground\\2.png", D3DCOLOR_XRGB(176, 224, 248));
+	textures->Add(ID_TEX_ENEMY, L"textures\\enemies.png", D3DCOLOR_XRGB(3, 26, 110));*/
 	textures->Add(ID_TEX_BACKGROUND, L"textures\\Level_1_Entrance.png", D3DCOLOR_XRGB(0, 128, 128));
 	textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 	textures->Add(ID_TEX_FIRE, L"textures\\fire.png", D3DCOLOR_XRGB(255, 0, 255));
@@ -234,28 +235,28 @@ void LoadResources()
 	objects.push_back(background);
 
 	//add fire enemy
-	/*LPDIRECT3DTEXTURE9 texFire = textures->Get(ID_TEX_FIRE);
-	sprites->Add(4001, 0, 3, 32, 63, texFire);
-	sprites->Add(4002, 0, 33, 63, 63, texBG);
+	LPDIRECT3DTEXTURE9 texFire = textures->Get(ID_TEX_FIRE);
+	sprites->Add(4001, 0, 0, 32, 63, texFire);
+	sprites->Add(4002, 32, 0, 63, 63, texFire);
 	fire = new CFire();
 	ani = new CAnimation(100);
 	ani->Add(4001);
 	ani->Add(4002);
 	animations->Add(40, ani);
 	fire->AddAnimation(40);
-	fire->SetPosition(20.0f, 140);
+	fire->SetPosition(20.0f, Y_SOILD-60);
 	objects.push_back(fire);
-*/
+
 	//simon->AddAnimation(599);		// died                 6
 	simon->SetPosition(50.0f, 0);
 	objects.push_back(simon);
 
 	//khoi tao hang gach ngang
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < 50; i++)
 	{
 		CBrick *brick = new CBrick();
 		brick->AddAnimation(601);
-		brick->SetPosition(0 + i * 16.0f, 150);
+		brick->SetPosition(0 + i * 16.0f, Y_SOILD);
 		objects.push_back(brick);
 	}
 	
@@ -296,9 +297,21 @@ void Render()
 		d3ddv->ColorFill(bb, NULL, BACKGROUND_COLOR);
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 		for (int i = 0; i < objects.size(); i++) {
-			float x = simon->x;
+			
+			//x va y dong vai tro la x_cam
+			float x = simon->x - SCREEN_WIDTH/2;		//khoi tao gia tri x_cam ban dau  = x_simon
 			float y = 0;
-			objects[i]->Render(x, y);
+		
+			float left, top, right, bottom;
+			background->GetBoundingBox(left, top, right, bottom);
+			
+			//gioi han dau map
+			if (x <0)
+				x = 0;		//khoi tao gia tri ban dau x_cam= 0
+			//gioi han cuoi map
+			else if (x > (right- SCREEN_WIDTH))
+				x = right - SCREEN_WIDTH;
+			objects[i]->Render(x,y);
 		}
 		spriteHandler->End();
 		d3ddv->EndScene();

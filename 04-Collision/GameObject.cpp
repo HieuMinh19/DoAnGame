@@ -113,7 +113,7 @@ void CGameObject::FilterCollision(
 }
 
 
-void CGameObject::RenderBoundingBox()
+void CGameObject::RenderBoundingBox(float &x_cam, float &y_cam)
 {
 	D3DXVECTOR3 p(x, y, 0);
 	RECT rect;

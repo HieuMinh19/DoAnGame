@@ -84,17 +84,18 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) {
 		delete coEvents[i];
-
 	}
 
-	if (vx > 0 && x > SCREEN_WIDTH) x = SCREEN_WIDTH;
+
+	//770 la kich thuoc  map, den 730 phai dung lai
+	if (vx > 0 && x > 730)
+		x = 730;
 	if (vx < 0 && x < 0) x = 0;
+	
 }
 
 void CSimon::Render(float &x_cam, float &y_cam)
 {
-	x_cam += x - SCREEN_WIDTH / 2;
-	y_cam += y - SCREEN_HEIGHT / 2;
 	int ani;
 	if (state == SIMON_STATE_DIE)
 		ani = SIMON_ANI_DIE;
@@ -131,10 +132,11 @@ void CSimon::Render(float &x_cam, float &y_cam)
 	//return mau binh thuong sau thoi gian khong va cham 
 	int alpha = 255;
 	//if (untouchable) alpha = 128;
-
-
+	float x_temp = x - x_cam;
+	float y_temp = y - y_cam;
 	animations[ani]->Render(x-x_cam, y-y_cam, alpha);
-	RenderBoundingBox();
+	
+	RenderBoundingBox(x_temp,y_temp);
 }
 
 void CSimon::SetState(int state)

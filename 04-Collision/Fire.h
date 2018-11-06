@@ -15,8 +15,8 @@
 class CFire : public CGameObject
 {
 public:
-	virtual void Render();
+	virtual void Render(float &x_cam, float &y_cam);
 	virtual void GetBoundingBox(float &l, float &t, float &r, float &b);
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
-	virtual void SetState(int state);
+	/*virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
+	virtual void SetState(int state);*/
 };

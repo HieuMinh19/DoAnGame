@@ -42,8 +42,8 @@
 class CSimon : public CGameObject
 {
 	int untouchable;
-	int attacTime;;
-	DWORD attact_start;
+	/*int attacTime;;
+	DWORD attact_start;*/
 	DWORD untouchable_start;
 
 public: 
