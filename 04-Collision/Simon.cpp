@@ -100,33 +100,20 @@ void CSimon::Render(float &x_cam, float &y_cam)
 	if (state == SIMON_STATE_DIE)
 		ani = SIMON_ANI_DIE;
 	if (state == SIMON_STATE_ATTACT) 
-		if (nx > 0) { 
-			ani = SIMON_ANI_ATTACT_LEFT; 
-		}
-		else {
-			ani = SIMON_ANI_ATTACT_RIGHT;
-		}
+		(nx > 0) ? ani = SIMON_ANI_ATTACT_LEFT : ani = SIMON_ANI_ATTACT_RIGHT;
 	else {
 		if (vx == 0)
-		{
-			if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
-			else ani = SIMON_ANI_IDLE_LEFT;
-		}
-		else if (vx > 0)
-			ani = SIMON_AN_WALKING_RIGHT;
-		else
-		{
-			ani = SIMON_ANI_WALKING_LEFT;
-		}
+			(nx > 0) ? ani = SIMON_ANI_IDLE_RIGHT : ani = SIMON_ANI_IDLE_LEFT;
+		else 
+			(vx > 0) ? ani = SIMON_AN_WALKING_RIGHT : ani = SIMON_ANI_WALKING_LEFT;
+		
 		if (vy < 0) {
-			if (nx > 0) ani = SIMON_ANI_SIT_LEFT;
-			else ani = SIMON_ANI_SIT_RIGHT;
+			(nx > 0) ? ani = SIMON_ANI_SIT_LEFT : ani = SIMON_ANI_SIT_RIGHT;
 		}
+		
 		if (state == SIMON_STATE_SITDOWN)
-		{
-			if (nx > 0) ani = SIMON_ANI_SIT_LEFT;
-			else ani = SIMON_ANI_SIT_RIGHT;
-		}
+			(nx > 0) ? ani = SIMON_ANI_SIT_LEFT : ani = SIMON_ANI_SIT_RIGHT;
+		
 	}
 	//mau bouding box
 	//return mau binh thuong sau thoi gian khong va cham 
