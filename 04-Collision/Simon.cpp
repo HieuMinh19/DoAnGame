@@ -99,8 +99,6 @@ void CSimon::Render(float &x_cam, float &y_cam)
 	int ani;
 	if (state == SIMON_STATE_DIE)
 		ani = SIMON_ANI_DIE;
-	if (state == SIMON_STATE_ATTACT) 
-		(nx > 0) ? ani = SIMON_ANI_ATTACT_LEFT : ani = SIMON_ANI_ATTACT_RIGHT;
 	else {
 		if (vx == 0)
 			(nx > 0) ? ani = SIMON_ANI_IDLE_RIGHT : ani = SIMON_ANI_IDLE_LEFT;
@@ -156,10 +154,7 @@ void CSimon::SetState(int state)
 		//don't jump when sitdown
 		vy += dt * SIMON_GRAVITY * 1000;
 		break;
-	case SIMON_STATE_ATTACT:
-		vx = 0;
-		/*attact_start = GetTickCount();*/
-		break;
+	
 	}
 }
 
