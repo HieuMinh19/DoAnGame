@@ -130,31 +130,32 @@ void CSimon::SetState(int state)
 
 	switch (state)
 	{
-	case SIMON_STATE_WALKING_RIGHT:
-		vx = SIMON_WALKING_SPEED;
-		nx = 1;
-		break;
-	case SIMON_STATE_WALKING_LEFT:
-		vx = -SIMON_WALKING_SPEED;
-		nx = -1;
-		break;
-	case SIMON_STATE_JUMP:
-		if (state == SIMON_STATE_SITDOWN)
-			state = SIMON_STATE_JUMP;
-		vy = -SIMON_JUMP_SPEED_Y;
-	case SIMON_STATE_IDLE:
-		vx = 0;
-		break;
-	case SIMON_STATE_DIE:
-		vy = -SIMON_DIE_DEFLECT_SPEED;
-		break;
-	case SIMON_STATE_SITDOWN:
-		//don't move when sitdown  
-		vx = 0;
-		//don't jump when sitdown
-		vy += dt * SIMON_GRAVITY * 1000;
-		break;
-	
+		case SIMON_STATE_WALKING_RIGHT:
+			vx = SIMON_WALKING_SPEED;
+			nx = 1;
+			break;
+		case SIMON_STATE_WALKING_LEFT:
+			vx = -SIMON_WALKING_SPEED;
+			nx = -1;
+			break;
+		case SIMON_STATE_JUMP:
+			if (state == SIMON_STATE_SITDOWN)
+				state = SIMON_STATE_JUMP;
+			if(y >= 100)
+				vy = -SIMON_JUMP_SPEED_Y;
+			break;
+		case SIMON_STATE_IDLE:
+			vx = 0;
+			break;
+		case SIMON_STATE_DIE:
+			vy = -SIMON_DIE_DEFLECT_SPEED;
+			break;
+		case SIMON_STATE_SITDOWN:
+			//don't move when sitdown  
+			vx = 0;
+			//don't jump when sitdown
+			vy += dt * SIMON_GRAVITY * 1000;
+			break;
 	}
 }
 
