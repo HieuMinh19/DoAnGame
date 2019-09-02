@@ -1,0 +1,12 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (04-Collision.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Simon.cpp
+  main.cpp
+d:\2019-2020 hki\doangame\04-collision\main.cpp(51): warning C4005: 'SIMON_ANI_IDLE_RIGHT': macro redefinition
+  d:\2019-2020 hki\doangame\04-collision\simon.h(24): note: see previous definition of 'SIMON_ANI_IDLE_RIGHT'
+d:\2019-2020 hki\doangame\04-collision\main.cpp(52): warning C4005: 'SIMON_ANI_IDLE_LEFT': macro redefinition
+  d:\2019-2020 hki\doangame\04-collision\simon.h(25): note: see previous definition of 'SIMON_ANI_IDLE_LEFT'
+d:\2019-2020 hki\doangame\04-collision\main.cpp(267): warning C4018: '<': signed/unsigned mismatch
+d:\2019-2020 hki\doangame\04-collision\main.cpp(272): warning C4018: '<': signed/unsigned mismatch
+d:\2019-2020 hki\doangame\04-collision\main.cpp(292): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+  04-Collision.vcxproj -> D:\2019-2020 HKI\DoAnGame\Debug\castlevania.exe

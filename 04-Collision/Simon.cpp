@@ -99,8 +99,6 @@ void CSimon::Render(float &x_cam, float &y_cam)
 	int ani;
 	if (state == SIMON_STATE_DIE)
 		ani = SIMON_ANI_DIE;
-	if (state == SIMON_STATE_ATTACT) 
-		(nx > 0) ? ani = SIMON_ANI_ATTACT_LEFT : ani = SIMON_ANI_ATTACT_RIGHT;
 	else {
 		if (vx == 0)
 			(nx > 0) ? ani = SIMON_ANI_IDLE_RIGHT : ani = SIMON_ANI_IDLE_LEFT;
@@ -132,34 +130,32 @@ void CSimon::SetState(int state)
 
 	switch (state)
 	{
-	case SIMON_STATE_WALKING_RIGHT:
-		vx = SIMON_WALKING_SPEED;
-		nx = 1;
-		break;
-	case SIMON_STATE_WALKING_LEFT:
-		vx = -SIMON_WALKING_SPEED;
-		nx = -1;
-		break;
-	case SIMON_STATE_JUMP:
-		if (state == SIMON_STATE_SITDOWN)
-			state = SIMON_STATE_JUMP;
-		vy = -SIMON_JUMP_SPEED_Y;
-	case SIMON_STATE_IDLE:
-		vx = 0;
-		break;
-	case SIMON_STATE_DIE:
-		vy = -SIMON_DIE_DEFLECT_SPEED;
-		break;
-	case SIMON_STATE_SITDOWN:
-		//don't move when sitdown  
-		vx = 0;
-		//don't jump when sitdown
-		vy += dt * SIMON_GRAVITY * 1000;
-		break;
-	case SIMON_STATE_ATTACT:
-		vx = 0;
-		/*attact_start = GetTickCount();*/
-		break;
+		case SIMON_STATE_WALKING_RIGHT:
+			vx = SIMON_WALKING_SPEED;
+			nx = 1;
+			break;
+		case SIMON_STATE_WALKING_LEFT:
+			vx = -SIMON_WALKING_SPEED;
+			nx = -1;
+			break;
+		case SIMON_STATE_JUMP:
+			if (state == SIMON_STATE_SITDOWN)
+				state = SIMON_STATE_JUMP;
+			if(y >= 100)
+				vy = -SIMON_JUMP_SPEED_Y;
+			break;
+		case SIMON_STATE_IDLE:
+			vx = 0;
+			break;
+		case SIMON_STATE_DIE:
+			vy = -SIMON_DIE_DEFLECT_SPEED;
+			break;
+		case SIMON_STATE_SITDOWN:
+			//don't move when sitdown  
+			vx = 0;
+			//don't jump when sitdown
+			vy += dt * SIMON_GRAVITY * 1000;
+			break;
 	}
 }
 

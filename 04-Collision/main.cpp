@@ -48,6 +48,13 @@
 #define ID_TEX_BACKGROUND	30
 #define ID_TEX_FIRE			40
 
+#define SIMON_ANI_IDLE_RIGHT	400
+#define SIMON_ANI_IDLE_LEFT		401 
+#define SIMON_ANI_WALK_LEFT		501
+#define SIMON_ANI_WALK_RIGHT	500  
+#define SIMON_ANI_DOWN_RIGHT	402
+#define SIMON_ANI_DOWN_LEFT		403    
+
 CGame *game;
 
 CSimon *simon;
@@ -70,9 +77,6 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	switch (KeyCode)
 	{
-	case DIK_Z:
-		simon->SetState(SIMON_STATE_ATTACT);
-		break;
 	case DIK_SPACE:
 		simon->SetState(SIMON_STATE_JUMP);
 		break;
@@ -144,21 +148,20 @@ void LoadResources()
 	sprites->Add(113, 396, 0, 412, 32, texSimon);		//idle right	
 
 	sprites->Add(112, 336, 5, 356, 32, texSimon);	//siting right
-
-
+	
 	sprites->Add(13, 67, 0, 84, 32, texSimon);		//idle left
 	sprites->Add(12, 38, 0, 51, 32, texSimon);		//walk left
 	sprites->Add(11, 5, 0, 23, 32, texSimon);
 	
 	sprites->Add(15, 125, 7, 144, 32, texSimon);	//sitting left 
 	
-	sprites->Add(40000, 60, 50, 85, 85, texSimon1);		//attact left
-	sprites->Add(40001, 106, 50, 127, 85, texSimon1);
-	sprites->Add(40002, 150, 50, 177, 85, texSimon1);
+	//sprites->Add(40000, 60, 50, 85, 85, texSimon1);		//attact left
+	//sprites->Add(40001, 106, 50, 127, 85, texSimon1);
+	//sprites->Add(40002, 150, 50, 177, 85, texSimon1);
 
-	sprites->Add(40010, 743, 50, 773, 85, texSimon1);	//attact right
-	sprites->Add(40011, 700, 50, 725, 85, texSimon1);	
-	sprites->Add(40012, 652, 50, 680, 85, texSimon1);	
+	//sprites->Add(40010, 743, 50, 773, 85, texSimon1);	//attact right
+	//sprites->Add(40011, 700, 50, 725, 85, texSimon1);	
+	//sprites->Add(40012, 652, 50, 680, 85, texSimon1);	
 
 
 	LPDIRECT3DTEXTURE9 texMisc = textures->Get(ID_TEX_MISC);
@@ -172,46 +175,46 @@ void LoadResources()
 	LPANIMATION ani;
 	ani = new CAnimation(100);	// idle right
 	ani->Add(113);
-	animations->Add(400, ani);
+	animations->Add(SIMON_ANI_IDLE_RIGHT, ani);
 
 	ani = new CAnimation(100);	// walk right
 	ani->Add(113);
 	ani->Add(114);
 	ani->Add(115);
-	animations->Add(500, ani);
+	animations->Add(SIMON_ANI_WALK_RIGHT, ani);
 
 	ani = new CAnimation(100);	// ngoi phai
 	ani->Add(112);
-	animations->Add(402, ani);
+	animations->Add(SIMON_ANI_DOWN_RIGHT, ani);
 
 	ani = new CAnimation(100);	// idle left
 	ani->Add(13);
-	animations->Add(401, ani);
+	animations->Add(SIMON_ANI_IDLE_LEFT, ani);
 
 	ani = new CAnimation(100);	// // walk left
 	ani->Add(13);
 	ani->Add(12);
 	ani->Add(11);
-	animations->Add(501, ani);
+	animations->Add(SIMON_ANI_WALK_LEFT, ani);
 
 	ani = new CAnimation(100);	// ngoi trai
 	ani->Add(15);
-	animations->Add(403, ani);
+	animations->Add(SIMON_ANI_DOWN_LEFT, ani);
 
 	ani = new CAnimation(100);		// brick
 	ani->Add(20001);
 	animations->Add(601, ani);
 
 	simon = new CSimon();
-	simon->AddAnimation(400);		// idle right          0
-	simon->AddAnimation(401);		// idle left           1            
-	simon->AddAnimation(500);		// walk right          2     
-	simon->AddAnimation(501);		// walk left			3
+	simon->AddAnimation(SIMON_ANI_IDLE_RIGHT);		// idle right          0
+	simon->AddAnimation(SIMON_ANI_IDLE_LEFT);		// idle left           1            
+	simon->AddAnimation(SIMON_ANI_WALK_RIGHT);		// walk right          2     
+	simon->AddAnimation(SIMON_ANI_WALK_LEFT);		// walk left			3
 
-	simon->AddAnimation(611);		//attact right	5
-	simon->AddAnimation(610);		//attact left	4
-	simon->AddAnimation(402);		// ngoi phai  
-	simon->AddAnimation(403);		// ngoi trai  
+	//simon->AddAnimation(611);		//attact right	5
+	//simon->AddAnimation(610);		//attact left	4
+	simon->AddAnimation(SIMON_ANI_DOWN_RIGHT);		// ngoi phai  
+	simon->AddAnimation(SIMON_ANI_DOWN_LEFT);		// ngoi trai  
 	
 	// background
 	LPDIRECT3DTEXTURE9 texBG = textures->Get(ID_TEX_BACKGROUND);
