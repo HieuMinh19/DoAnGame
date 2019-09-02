@@ -19,13 +19,15 @@
 //#define SIMON_STATE_ATTACT			500
 #define SIMON_STATE_SITDOWN			600
 
+
+//define index of animation
 #define SIMON_ANI_IDLE_RIGHT			0
 #define SIMON_ANI_IDLE_LEFT				1
 #define SIMON_AN_WALKING_RIGHT			2
 #define SIMON_ANI_WALKING_LEFT			3
-#define SIMON_ANI_SIT_LEFT				6
-#define SIMON_ANI_SIT_RIGHT				7
-#define SIMON_ANI_DIE					8
+#define SIMON_ANI_SIT_LEFT				4
+#define SIMON_ANI_SIT_RIGHT				5
+#define SIMON_ANI_DIE					6
 
 #define SIMON_BBOX_WIDTH  15
 #define SIMON_BBOX_HEIGHT 27

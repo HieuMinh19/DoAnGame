@@ -155,13 +155,13 @@ void LoadResources()
 	
 	sprites->Add(15, 125, 7, 144, 32, texSimon);	//sitting left 
 	
-	sprites->Add(40000, 60, 50, 85, 85, texSimon1);		//attact left
-	sprites->Add(40001, 106, 50, 127, 85, texSimon1);
-	sprites->Add(40002, 150, 50, 177, 85, texSimon1);
+	//sprites->Add(40000, 60, 50, 85, 85, texSimon1);		//attact left
+	//sprites->Add(40001, 106, 50, 127, 85, texSimon1);
+	//sprites->Add(40002, 150, 50, 177, 85, texSimon1);
 
-	sprites->Add(40010, 743, 50, 773, 85, texSimon1);	//attact right
-	sprites->Add(40011, 700, 50, 725, 85, texSimon1);	
-	sprites->Add(40012, 652, 50, 680, 85, texSimon1);	
+	//sprites->Add(40010, 743, 50, 773, 85, texSimon1);	//attact right
+	//sprites->Add(40011, 700, 50, 725, 85, texSimon1);	
+	//sprites->Add(40012, 652, 50, 680, 85, texSimon1);	
 
 
 	LPDIRECT3DTEXTURE9 texMisc = textures->Get(ID_TEX_MISC);
@@ -211,8 +211,8 @@ void LoadResources()
 	simon->AddAnimation(SIMON_ANI_WALK_RIGHT);		// walk right          2     
 	simon->AddAnimation(SIMON_ANI_WALK_LEFT);		// walk left			3
 
-	simon->AddAnimation(611);		//attact right	5
-	simon->AddAnimation(610);		//attact left	4
+	//simon->AddAnimation(611);		//attact right	5
+	//simon->AddAnimation(610);		//attact left	4
 	simon->AddAnimation(SIMON_ANI_DOWN_RIGHT);		// ngoi phai  
 	simon->AddAnimation(SIMON_ANI_DOWN_LEFT);		// ngoi trai  
 	
