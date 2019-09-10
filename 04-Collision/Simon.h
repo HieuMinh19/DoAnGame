@@ -16,7 +16,7 @@
 #define SIMON_STATE_WALKING_LEFT	200
 #define SIMON_STATE_JUMP			300
 #define SIMON_STATE_DIE				400
-//#define SIMON_STATE_ATTACT			500
+#define SIMON_STATE_ATTACT			500
 #define SIMON_STATE_SITDOWN			600
 
 
@@ -27,7 +27,9 @@
 #define SIMON_ANI_WALKING_LEFT			3
 #define SIMON_ANI_SIT_LEFT				4
 #define SIMON_ANI_SIT_RIGHT				5
-#define SIMON_ANI_DIE					6
+#define SIMON_ANI_ATTACT_LEFT			6
+#define SIMON_ANI_ATTACT_RIGHT			7
+#define SIMON_ANI_DIE					8
 
 #define SIMON_BBOX_WIDTH  15
 #define SIMON_BBOX_HEIGHT 27
@@ -40,21 +42,18 @@
 
 class CSimon : public CGameObject
 {
-	int untouchable;
-	/*int attacTime;;
-	DWORD attact_start;*/
-	DWORD untouchable_start;
+	int isAttact;
+	DWORD attactTime;
 
 public: 
 	CSimon() : CGameObject()
 	{
-		untouchable = 0;
+		isAttact = 0;
 	}
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render(float &x_cam, float &y_cam);
 	void SetState(int state);
 	
-	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
-	void StartAttact();
+	void StartAttact() { isAttact = 1; attactTime = GetTickCount(); }
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 };

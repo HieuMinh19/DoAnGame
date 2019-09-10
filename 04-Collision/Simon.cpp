@@ -3,6 +3,7 @@
 #include "Simon.h"
 #include "Game.h"
 
+
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	// Calculate dx, dy 
@@ -19,12 +20,12 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// turn off collision when die 
 	if (state != SIMON_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
-	// reset untouchable timer if untouchable time has passed
-	/*if ( GetTickCount() - untouchable_start > SIMON_UNTOUCHABLE_TIME)
+	// reset attact timer 
+	if ( GetTickCount() - attactTime > 300)		//100 is time to live of frame
 	{
-		untouchable_start = 0;
-		untouchable = 0;
-	}*/
+		attactTime = 0;
+		isAttact = 0;
+	}
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -111,6 +112,13 @@ void CSimon::Render(float &x_cam, float &y_cam)
 		
 		if (state == SIMON_STATE_SITDOWN)
 			(nx > 0) ? ani = SIMON_ANI_SIT_LEFT : ani = SIMON_ANI_SIT_RIGHT;
+
+		if (isAttact){
+			dx = 0;			//stop moving
+			SetState(SIMON_STATE_ATTACT);
+			(nx > 0) ? ani = SIMON_ANI_ATTACT_RIGHT : ani = SIMON_ANI_ATTACT_LEFT;
+		}
+			
 		
 	}
 	//mau bouding box
@@ -156,6 +164,9 @@ void CSimon::SetState(int state)
 			//don't jump when sitdown
 			vy += dt * SIMON_GRAVITY * 1000;
 			break;
+		case SIMON_STATE_ATTACT:
+			vx = 0;
+			break;
 	}
 }
 
@@ -165,8 +176,4 @@ void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom
 	top = y; 
 	right = x + SIMON_BBOX_WIDTH;
 	bottom = y + SIMON_BBOX_HEIGHT;
-}
-
-void CSimon::StartAttact() {
-
 }
