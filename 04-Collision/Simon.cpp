@@ -3,7 +3,6 @@
 #include "Simon.h"
 #include "Game.h"
 
-
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	// Calculate dx, dy 
@@ -21,7 +20,8 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state != SIMON_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 	// reset attact timer 
-	if ( GetTickCount() - attactTime > 300)		//100 is time to live of frame
+
+	if ( GetTickCount() - attactTime > 450)		//100 is time to live of frame
 	{
 		attactTime = 0;
 		isAttact = 0;
@@ -87,7 +87,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		delete coEvents[i];
 	}
 
-
 	//770 la kich thuoc  map, den 730 phai dung lai
 	if (vx > 0 && x > 730)
 		x = 730;
@@ -114,8 +113,8 @@ void CSimon::Render(float &x_cam, float &y_cam)
 			(nx > 0) ? ani = SIMON_ANI_SIT_LEFT : ani = SIMON_ANI_SIT_RIGHT;
 
 		if (isAttact){
-			dx = 0;			//stop moving
-			SetState(SIMON_STATE_ATTACT);
+			dx = 0;			//don't jump
+			vx = 0;			//don't moving
 			(nx > 0) ? ani = SIMON_ANI_ATTACT_RIGHT : ani = SIMON_ANI_ATTACT_LEFT;
 		}
 			
@@ -139,18 +138,23 @@ void CSimon::SetState(int state)
 	switch (state)
 	{
 		case SIMON_STATE_WALKING_RIGHT:
-			vx = SIMON_WALKING_SPEED;
-			nx = 1;
+			if (!isAttact) {
+				vx = SIMON_WALKING_SPEED;
+				nx = 1;
+			}
 			break;
 		case SIMON_STATE_WALKING_LEFT:
-			vx = -SIMON_WALKING_SPEED;
-			nx = -1;
+			if (!isAttact) {
+				vx = -SIMON_WALKING_SPEED;
+				nx = -1;
+			}
 			break;
 		case SIMON_STATE_JUMP:
-			if (state == SIMON_STATE_SITDOWN)
-				state = SIMON_STATE_JUMP;
-			if(y >= 100)
+
+			if (vy <= (float)0.032 && vy >= 0) {
+				vx = 0;
 				vy = -SIMON_JUMP_SPEED_Y;
+			}	
 			break;
 		case SIMON_STATE_IDLE:
 			vx = 0;
@@ -159,13 +163,10 @@ void CSimon::SetState(int state)
 			vy = -SIMON_DIE_DEFLECT_SPEED;
 			break;
 		case SIMON_STATE_SITDOWN:
-			//don't move when sitdown  
+			//don't move when sitdown
 			vx = 0;
 			//don't jump when sitdown
 			vy += dt * SIMON_GRAVITY * 1000;
-			break;
-		case SIMON_STATE_ATTACT:
-			vx = 0;
 			break;
 	}
 }
@@ -173,7 +174,8 @@ void CSimon::SetState(int state)
 void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
 	left = x;
-	top = y; 
+	top = y;
 	right = x + SIMON_BBOX_WIDTH;
 	bottom = y + SIMON_BBOX_HEIGHT;
+	
 }
