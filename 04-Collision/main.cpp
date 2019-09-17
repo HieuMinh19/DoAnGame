@@ -38,15 +38,15 @@
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
 
-#define MAX_FRAME_RATE 120
-#define FRAME_LASTED	100		//time to live of 1 frame of list animation 
-#define Y_SOILD 150			//y position of enemy in the ground
+#define MAX_FRAME_RATE	120
+#define FRAME_LASTED	100			//time to live of 1 frame of list animation 
+#define Y_SOILD			150			//y position of enemy in the ground
 
-#define ID_TEX_SIMON		1
-#define ID_TEX_ENEMY		10
-#define ID_TEX_MISC			20
-#define ID_TEX_BACKGROUND	30
-#define ID_TEX_FIRE			40
+#define ID_TEX_SIMON		100
+#define ID_TEX_ENEMY		200
+#define ID_TEX_MISC			300
+#define ID_TEX_BACKGROUND	400
+#define ID_TEX_FIRE			500
 
 #define SIMON_ANI_IDLE_RIGHT	400
 #define SIMON_ANI_IDLE_LEFT		401 
@@ -77,7 +77,6 @@ CSampleKeyHander * keyHandler;
 
 void CSampleKeyHander::OnKeyDown(int KeyCode)
 {
-	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
@@ -89,7 +88,11 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 		simon->SetPosition(50.0f,0.0f);
 		simon->SetSpeed(0, 0);
 		break;
+	case DIK_X:
+		simon->StartAttact();
+		break;
 	}
+	
 }
 
 void CSampleKeyHander::OnKeyUp(int KeyCode)
@@ -101,17 +104,14 @@ void CSampleKeyHander::KeyState(BYTE *states)
 {
 	// disable control key when Mario die 
 	if (simon->GetState() == SIMON_STATE_DIE) return;
-	if (game->IsKeyDown(DIK_RIGHT))
-		simon->SetState(SIMON_STATE_WALKING_RIGHT);
+	if (game->IsKeyDown(DIK_RIGHT)) 
+		simon->SetState(SIMON_STATE_WALKING_RIGHT);		
 	else if (game->IsKeyDown(DIK_LEFT))
 		simon->SetState(SIMON_STATE_WALKING_LEFT);
 	else
 		simon->SetState(SIMON_STATE_IDLE);
 	if(game->IsKeyDown(DIK_DOWN))
 		simon->SetState(SIMON_STATE_SITDOWN);
-	if (game->IsKeyDown(DIK_X)){
-		simon->StartAttact();
-	}
 }
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -138,34 +138,20 @@ void LoadResources()
 
 	textures->Add(ID_TEX_SIMON, L"textures\\not_weapons.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_BACKGROUND, L"textures\\Level_1_Entrance.png", D3DCOLOR_XRGB(0, 128, 128));
-	textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
+	textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(0, 0, 0));
 	textures->Add(ID_TEX_FIRE, L"textures\\fire.png", D3DCOLOR_XRGB(255, 0, 255));
 
 	CSprites * sprites = CSprites::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
 
 	LPDIRECT3DTEXTURE9 texSimon = textures->Get(ID_TEX_SIMON);
-	// big
-	sprites->Add(114, 428, 0, 441, 32, texSimon);		//14	->walk right
-	sprites->Add(115, 458, 0, 474, 32, texSimon);		//15
 	
-	sprites->Add(113, 396, 0, 412, 32, texSimon);		//idle right	
-
-	sprites->Add(112, 336, 5, 356, 32, texSimon);	//siting right
-	
-	sprites->Add(13, 67, 0, 84, 32, texSimon);		//idle left
-	sprites->Add(12, 38, 0, 51, 32, texSimon);		//walk left
-	sprites->Add(11, 5, 0, 23, 32, texSimon);
-	
-	sprites->Add(16, 155, 0, 181, 32, texSimon);		
-	sprites->Add(17, 184, 0, 203, 32, texSimon);	
-	sprites->Add(18, 209, 2, 233, 32, texSimon);
-
-	sprites->Add(19, 247, 2, 270, 32, texSimon);
-	sprites->Add(110, 276, 0, 294, 32, texSimon);
-	sprites->Add(111, 298, 0, 325, 32, texSimon);
-
-	sprites->Add(15, 125, 7, 144, 32, texSimon);	//sitting left 
+	int IDSprite = 0;
+	for(int i = 0; i < 3; i++)
+		for (int j = 0; j < 16; j++) {
+			IDSprite++;
+			sprites->Add(IDSprite*ID_TEX_SIMON, 30*j, i*33, 30*j+30, 33*i+33, texSimon);
+		}
 	
 	LPDIRECT3DTEXTURE9 texMisc = textures->Get(ID_TEX_MISC);
 	sprites->Add(20001, 1, 1, 30, 30, texMisc);
@@ -177,43 +163,43 @@ void LoadResources()
 
 	LPANIMATION ani;
 	ani = new CAnimation(FRAME_LASTED);	// idle right
-	ani->Add(113);
+	ani->Add(1400);
 	animations->Add(SIMON_ANI_IDLE_RIGHT, ani);
 
 	ani = new CAnimation(FRAME_LASTED);	// walk right
-	ani->Add(113);
-	ani->Add(114);
-	ani->Add(115);
+	ani->Add(1400);
+	ani->Add(1500);
+	ani->Add(1600);
 	animations->Add(SIMON_ANI_WALK_RIGHT, ani);
 
 	ani = new CAnimation(FRAME_LASTED);	// ngoi phai
-	ani->Add(112);
+	ani->Add(1200);
 	animations->Add(SIMON_ANI_DOWN_RIGHT, ani);
 
 	ani = new CAnimation(FRAME_LASTED);	// idle left
-	ani->Add(13);
+	ani->Add(300);
 	animations->Add(SIMON_ANI_IDLE_LEFT, ani);
 
 	ani = new CAnimation(FRAME_LASTED);	// // walk left
-	ani->Add(13);
-	ani->Add(12);
-	ani->Add(11);
+	ani->Add(300);
+	ani->Add(200);
+	ani->Add(100);
 	animations->Add(SIMON_ANI_WALK_LEFT, ani);
 
-	ani = new CAnimation(FRAME_LASTED);
-	ani->Add(16);
-	ani->Add(17);
-	ani->Add(18);
+	ani = new CAnimation(150);
+	ani->Add(600);
+	ani->Add(700);
+	ani->Add(800);
 	animations->Add(SIMON_ANI_ATTACT_LEFT, ani);
 
-	ani = new CAnimation(FRAME_LASTED);
-	ani->Add(19);
-	ani->Add(110);
-	ani->Add(111);
+	ani = new CAnimation(150);
+	ani->Add(1100);
+	ani->Add(1000);
+	ani->Add(900);
 	animations->Add(SIMON_ANI_ATTACT_RIGHT, ani);
 
 	ani = new CAnimation(FRAME_LASTED);	// ngoi trai
-	ani->Add(15);
+	ani->Add(500);
 	animations->Add(SIMON_ANI_DOWN_LEFT, ani);
 
 	ani = new CAnimation(FRAME_LASTED);		// brick
@@ -302,7 +288,6 @@ void Render()
 		d3ddv->ColorFill(bb, NULL, BACKGROUND_COLOR);
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 		for (int i = 0; i < objects.size(); i++) {
-			
 			//x va y dong vai tro la x_cam
 			float x = simon->x - SCREEN_WIDTH/2;		//khoi tao gia tri x_cam ban dau  = x_simon
 			float y = 0;
@@ -311,7 +296,7 @@ void Render()
 			background->GetBoundingBox(left, top, right, bottom);
 			
 			//gioi han dau map
-			if (x <0)
+			if (x < 0)
 				x = 0;		//khoi tao gia tri ban dau x_cam= 0
 			//gioi han cuoi map
 			else if (x > (right- SCREEN_WIDTH))
@@ -420,7 +405,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	keyHandler = new CSampleKeyHander();
 	game->InitKeyboard(keyHandler);
-
 
 	LoadResources();
 

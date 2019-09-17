@@ -22,7 +22,7 @@ typedef CKeyEventHandler * LPKEYEVENTHANDLER;
 
 class CGame
 {
-	static CGame * __instance;
+	static CGame * __instance;					//singleton
 	HWND hWnd;									// Window handle
 
 	LPDIRECT3D9 d3d = NULL;						// Direct3D handle
@@ -66,7 +66,9 @@ public:
 	LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; }
 	LPD3DXSPRITE GetSpriteHandler() { return this->spriteHandler; }
 
-	static CGame * GetInstance();
+	//cac doi tuong khac muon tao ra doi tuong Game phai thong qua ham nay
+	//-> dam bao tinh singleton
+	static CGame * GetInstance();		
 
 	~CGame();
 };
