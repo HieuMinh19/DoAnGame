@@ -10,7 +10,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	// Simple fall down
 	vy += SIMON_GRAVITY * dt;
-
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -26,6 +25,10 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		attactTime = 0;
 		isAttact = 0;
 	}
+
+	//DebugOut(L"[INFO] vy: %d\n", vy);
+	if (vy > 0)
+		setJump(true);
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -105,7 +108,7 @@ void CSimon::Render(float &x_cam, float &y_cam)
 		else 
 			(vx > 0) ? ani = SIMON_AN_WALKING_RIGHT : ani = SIMON_ANI_WALKING_LEFT;
 		
-		if (vy < 0) {
+		if (vy < 0) {//jump
 			(nx > 0) ? ani = SIMON_ANI_SIT_LEFT : ani = SIMON_ANI_SIT_RIGHT;
 		}
 		
@@ -150,11 +153,11 @@ void CSimon::SetState(int state)
 			}
 			break;
 		case SIMON_STATE_JUMP:
-
-			if (vy <= (float)0.032 && vy >= 0) {
+			if (isJump) {
 				vx = 0;
 				vy = -SIMON_JUMP_SPEED_Y;
-			}	
+				isJump = false;
+			}
 			break;
 		case SIMON_STATE_IDLE:
 			vx = 0;
@@ -169,6 +172,14 @@ void CSimon::SetState(int state)
 			vy += dt * SIMON_GRAVITY * 1000;
 			break;
 	}
+}
+
+void CSimon::StartAttact()
+{
+	if (!isAttact) {
+		isAttact = 1; attactTime = GetTickCount();
+	}
+		 
 }
 
 void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom)

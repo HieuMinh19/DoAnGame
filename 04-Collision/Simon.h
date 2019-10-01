@@ -39,18 +39,24 @@
 
 class CSimon : public CGameObject
 {
-	int isAttact;
+	
+	bool isJump;
 	DWORD attactTime;
 
 public: 
+	int isAttact;
 	CSimon() : CGameObject()
 	{
 		isAttact = 0;
+		isJump = true;
 	}
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render(float &x_cam, float &y_cam);
 	void SetState(int state);
 	
-	void StartAttact() { isAttact = 1; attactTime = GetTickCount(); }
+	void StartAttact();
+	void setJump(bool jump) { this->isJump = jump; }
+	bool getJump() { return this->isJump; }
+
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 };
