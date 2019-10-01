@@ -32,6 +32,7 @@
 #include "Goomba.h"
 #include "Fire.h"
 #include "BackGround.h"
+#include "MorningStar.h"
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"04 - Collision"
@@ -47,6 +48,7 @@
 #define ID_TEX_MISC			300
 #define ID_TEX_BACKGROUND	400
 #define ID_TEX_FIRE			500
+#define ID_TEX_WEAPON		600
 
 #define SIMON_ANI_IDLE_RIGHT	400
 #define SIMON_ANI_IDLE_LEFT		401 
@@ -64,6 +66,8 @@ CSimon *simon;
 
 CBackGround *background;
 CFire *fire;
+CMorningstar *weapon;
+
 vector<LPGAMEOBJECT> objects;
 
 class CSampleKeyHander: public CKeyEventHandler
@@ -90,6 +94,8 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 		break;
 	case DIK_X:
 		simon->StartAttact();
+		//weapon->SetState(WEAPON_STATE_ATTACT);
+		weapon->setAttact(simon->nx);
 		break;
 	}
 	
@@ -97,7 +103,7 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 
 void CSampleKeyHander::OnKeyUp(int KeyCode)
 {
-	DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
+	//DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
 }
 
 void CSampleKeyHander::KeyState(BYTE *states)
@@ -140,6 +146,8 @@ void LoadResources()
 	textures->Add(ID_TEX_BACKGROUND, L"textures\\Level_1_Entrance.png", D3DCOLOR_XRGB(0, 128, 128));
 	textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(0, 0, 0));
 	textures->Add(ID_TEX_FIRE, L"textures\\fire.png", D3DCOLOR_XRGB(255, 0, 255));
+	//sprite bi dao nguoc -> can lay right_bottom top_left
+	textures->Add(ID_TEX_WEAPON, L"textures\\Resources\\morningstar.png", D3DCOLOR_XRGB(255, 0, 255));
 
 	CSprites * sprites = CSprites::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
@@ -161,15 +169,16 @@ void LoadResources()
 	sprites->Add(30002, 25, 14, 41, 29, texEnemy);
 	sprites->Add(30003, 45, 21, 61, 29, texEnemy); // die sprite
 
-	LPANIMATION ani;
+	LPANIMATION ani;	
+
 	ani = new CAnimation(FRAME_LASTED);	// idle right
 	ani->Add(1400);
 	animations->Add(SIMON_ANI_IDLE_RIGHT, ani);
 
 	ani = new CAnimation(FRAME_LASTED);	// walk right
 	ani->Add(1400);
-	ani->Add(1500);
-	ani->Add(1600);
+	ani->Add(1500);	
+	ani->Add(1600);	
 	animations->Add(SIMON_ANI_WALK_RIGHT, ani);
 
 	ani = new CAnimation(FRAME_LASTED);	// ngoi phai
@@ -231,7 +240,7 @@ void LoadResources()
 	sprites->Add(4001, 0, 0, 32, 63, texFire);
 	sprites->Add(4002, 32, 0, 63, 63, texFire);
 	fire = new CFire();
-	ani = new CAnimation(100);
+	ani = new CAnimation(200);
 	ani->Add(4001);
 	ani->Add(4002);
 	animations->Add(40, ani);
@@ -239,8 +248,38 @@ void LoadResources()
 	fire->SetPosition(20.0f, Y_SOILD-60);
 	objects.push_back(fire);
 
-	simon->SetPosition(50.0f, 0);
 	objects.push_back(simon);
+
+
+	//add weapon enemy
+	LPDIRECT3DTEXTURE9 texWeapon = textures->Get(ID_TEX_WEAPON);	
+	sprites->Add(60000, 63, 5, 80, 35, texWeapon);
+	sprites->Add(60004, 505, 30, 480, 5, texWeapon);
+	sprites->Add(60002, 205, 20, 175, 5, texWeapon);
+	
+	//attact right
+	sprites->Add(60001, 160, 30, 135, 5, texWeapon);
+	sprites->Add(60003, 465, 20, 440, 5, texWeapon);
+	sprites->Add(60005, 560, 5, 575, 35, texWeapon);
+
+	weapon = new CMorningstar();
+	ani = new CAnimation(300);
+	ani->Add(60000);
+	ani->Add(60004);
+	ani->Add(60002);
+	animations->Add(6001, ani);
+	weapon->AddAnimation(6001);	//attact left
+
+	ani = new CAnimation(300);
+	ani->Add(60005);
+	ani->Add(60001);
+	ani->Add(60003);
+	animations->Add(6002, ani);
+	weapon->AddAnimation(6002);	//attact right
+
+
+	weapon->SetPosition(70.0f, Y_SOILD - 60);
+	objects.push_back(weapon);
 
 	//khoi tao hang gach ngang
 	for (int i = 0; i < 50; i++)
