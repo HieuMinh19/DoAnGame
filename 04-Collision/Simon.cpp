@@ -20,13 +20,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		CalcPotentialCollisions(coObjects, coEvents);
 	// reset attact timer 
 
-	if ( GetTickCount() - attactTime > 450)		//100 is time to live of frame
-	{
+	if ( GetTickCount() - attactTime > ATTACT_FRAME_LASTED * 3)	{
 		attactTime = 0;
 		isAttact = 0;
 	}
 
-	//DebugOut(L"[INFO] vy: %d\n", vy);
 	if (vy > 0)
 		setJump(true);
 
@@ -119,6 +117,9 @@ void CSimon::Render(float &x_cam, float &y_cam)
 			dx = 0;			//don't jump
 			vx = 0;			//don't moving
 			(nx > 0) ? ani = SIMON_ANI_ATTACT_RIGHT : ani = SIMON_ANI_ATTACT_LEFT;
+
+			morningStar->setAttact(nx);
+			morningStar->Render(x_cam, y_cam);
 		}
 			
 		

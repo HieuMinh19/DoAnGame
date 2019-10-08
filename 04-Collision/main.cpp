@@ -33,6 +33,7 @@
 #include "Fire.h"
 #include "BackGround.h"
 #include "MorningStar.h"
+#include "Global.h"
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"04 - Collision"
@@ -40,7 +41,6 @@
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
 
 #define MAX_FRAME_RATE	120
-#define FRAME_LASTED	100			//time to live of 1 frame of list animation 
 #define Y_SOILD			150			//y position of enemy in the ground
 
 #define ID_TEX_SIMON		100
@@ -94,7 +94,7 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 		break;
 	case DIK_X:
 		simon->StartAttact();
-		//weapon->SetState(WEAPON_STATE_ATTACT);
+		simon->getMorningStar()->SetPosition(simon->x, simon->y);
 		weapon->setAttact(simon->nx);
 		break;
 	}
@@ -195,13 +195,13 @@ void LoadResources()
 	ani->Add(100);
 	animations->Add(SIMON_ANI_WALK_LEFT, ani);
 
-	ani = new CAnimation(150);
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(600);
 	ani->Add(700);
 	ani->Add(800);
 	animations->Add(SIMON_ANI_ATTACT_LEFT, ani);
 
-	ani = new CAnimation(150);
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(1100);
 	ani->Add(1000);
 	ani->Add(900);
@@ -215,7 +215,37 @@ void LoadResources()
 	ani->Add(20001);
 	animations->Add(601, ani);
 
-	simon = new CSimon();
+	//add weapon enemy
+	LPDIRECT3DTEXTURE9 texWeapon = textures->Get(ID_TEX_WEAPON);
+	sprites->Add(60000, 63, 5, 80, 35, texWeapon);
+	sprites->Add(60004, 505, 30, 480, 5, texWeapon);
+	sprites->Add(60002, 205, 20, 175, 5, texWeapon);
+
+	//attact right
+	sprites->Add(60001, 160, 30, 135, 5, texWeapon);
+	sprites->Add(60003, 465, 20, 440, 5, texWeapon);
+	sprites->Add(60005, 560, 5, 575, 35, texWeapon);
+
+	weapon = new CMorningstar();
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60000);
+	ani->Add(60004);
+	ani->Add(60002);
+	animations->Add(6001, ani);
+	weapon->AddAnimation(6001);	//morningstar attact left
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60005);
+	ani->Add(60001);
+	ani->Add(60003);
+	animations->Add(6002, ani);
+	weapon->AddAnimation(6002);	//morningstar attact right
+
+	weapon->SetPosition(70.0f, Y_SOILD - 60);
+	objects.push_back(weapon);
+
+
+	simon = new CSimon(weapon);
 	simon->AddAnimation(SIMON_ANI_IDLE_RIGHT);		         
 	simon->AddAnimation(SIMON_ANI_IDLE_LEFT);		                     
 	simon->AddAnimation(SIMON_ANI_WALK_RIGHT);		              
@@ -250,36 +280,6 @@ void LoadResources()
 
 	objects.push_back(simon);
 
-
-	//add weapon enemy
-	LPDIRECT3DTEXTURE9 texWeapon = textures->Get(ID_TEX_WEAPON);	
-	sprites->Add(60000, 63, 5, 80, 35, texWeapon);
-	sprites->Add(60004, 505, 30, 480, 5, texWeapon);
-	sprites->Add(60002, 205, 20, 175, 5, texWeapon);
-	
-	//attact right
-	sprites->Add(60001, 160, 30, 135, 5, texWeapon);
-	sprites->Add(60003, 465, 20, 440, 5, texWeapon);
-	sprites->Add(60005, 560, 5, 575, 35, texWeapon);
-
-	weapon = new CMorningstar();
-	ani = new CAnimation(300);
-	ani->Add(60000);
-	ani->Add(60004);
-	ani->Add(60002);
-	animations->Add(6001, ani);
-	weapon->AddAnimation(6001);	//attact left
-
-	ani = new CAnimation(300);
-	ani->Add(60005);
-	ani->Add(60001);
-	ani->Add(60003);
-	animations->Add(6002, ani);
-	weapon->AddAnimation(6002);	//attact right
-
-
-	weapon->SetPosition(70.0f, Y_SOILD - 60);
-	objects.push_back(weapon);
 
 	//khoi tao hang gach ngang
 	for (int i = 0; i < 50; i++)
