@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "debug.h"
+#include "Global.h"
 
 #define BBOX_WIDTH_LV1	30
 #define BB_HEIGHT		10
@@ -20,13 +21,15 @@ class CMorningstar : public CGameObject
 	return -1 =>	attact right
 	return 0 =>		don't attact
 	*/
-	int isActiveLeft;		
+	int isActiveLeft;
+	DWORD attactTime;
 public:
 	int getLevel() { return this->level; }
 	int getAttact() { return this->isActiveLeft; }
 	void setAttact(int status) { this->isActiveLeft = status; }
 	void setLevel(int lv) { this->level = lv; }
 	void Render(float &x_cam, float &y_cam);
+	void Render(float xSimon, float ySimon, float xCam, float yCam);
 	virtual void GetBoundingBox(float &l, float &t, float &r, float &b);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	CMorningstar();

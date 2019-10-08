@@ -1,5 +1,7 @@
 #pragma once
 #include "GameObject.h"
+#include "Global.h"
+#include "MorningStar.h"
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 220
@@ -39,14 +41,15 @@
 
 class CSimon : public CGameObject
 {
-	
 	bool isJump;
 	DWORD attactTime;
+	CMorningstar* morningStar;
 
 public: 
 	int isAttact;
-	CSimon() : CGameObject()
+	CSimon(CMorningstar* morningStar) : CGameObject()
 	{
+		this->morningStar = morningStar;
 		isAttact = 0;
 		isJump = true;
 	}
@@ -57,6 +60,8 @@ public:
 	void StartAttact();
 	void setJump(bool jump) { this->isJump = jump; }
 	bool getJump() { return this->isJump; }
+	CMorningstar* getMorningStar() { return this->morningStar; }
+
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 };
