@@ -117,9 +117,9 @@ void CSimon::Render(float &x_cam, float &y_cam)
 			dx = 0;			//don't jump
 			vx = 0;			//don't moving
 			(nx > 0) ? ani = SIMON_ANI_ATTACT_RIGHT : ani = SIMON_ANI_ATTACT_LEFT;
-
+			DebugOut(L"[INFO] frame: %d\n", animations[ani]->getCurrentFrame());
 			morningStar->setAttact(nx);
-			morningStar->Render(x_cam, y_cam);
+			morningStar->Render(x_cam, y_cam, animations[ani]->getCurrentFrame());
 		}
 			
 		
@@ -178,7 +178,8 @@ void CSimon::SetState(int state)
 void CSimon::StartAttact()
 {
 	if (!isAttact) {
-		isAttact = 1; attactTime = GetTickCount();
+		isAttact = 1; 
+		attactTime = GetTickCount();
 	}
 		 
 }
