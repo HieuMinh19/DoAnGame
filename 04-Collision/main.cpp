@@ -1,24 +1,4 @@
-﻿/* =============================================================
-	INTRODUCTION TO GAME PROGRAMMING SE102
-	
-	SAMPLE 04 - COLLISION
-
-	This sample illustrates how to:
-
-		1/ Implement SweptAABB algorithm between moving objects
-		2/ Implement a simple (yet effective) collision frame work
-
-	Key functions: 
-		CGame::SweptAABB
-		CGameObject::SweptAABBEx
-		CGameObject::CalcPotentialCollisions
-		CGameObject::FilterCollision
-
-		CGameObject::GetBoundingBox
-		
-================================================================ */
-
-#include <windows.h>
+﻿#include <windows.h>
 #include <d3d9.h>
 #include <d3dx9.h>
 
@@ -227,19 +207,55 @@ void LoadResources()
 	sprites->Add(60005, 560, 5, 575, 35, texWeapon);
 
 	weapon = new CMorningstar();
+	//ani = new CAnimation(ATTACT_FRAME_LASTED);
+	//ani->Add(60000);
+	//ani->Add(60004);
+	//ani->Add(60002);
+	//animations->Add(6001, ani);
+	//weapon->AddAnimation(6001);	//morningstar attact left
+
+	//ani = new CAnimation(ATTACT_FRAME_LASTED);
+	//ani->Add(60005);
+	//ani->Add(60001);
+	//ani->Add(60003);
+	//animations->Add(6002, ani);
+	//weapon->AddAnimation(6002);	//morningstar attact right
+
+
+	//attact left
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60000);
-	ani->Add(60004);
-	ani->Add(60002);
-	animations->Add(6001, ani);
-	weapon->AddAnimation(6001);	//morningstar attact left
+	animations->Add(6000, ani);
+	weapon->AddAnimation(6000);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60005);
-	ani->Add(60001);
-	ani->Add(60003);
+	ani->Add(60004);
+	animations->Add(6004, ani);
+	weapon->AddAnimation(6004);
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60002);
 	animations->Add(6002, ani);
-	weapon->AddAnimation(6002);	//morningstar attact right
+	weapon->AddAnimation(6002);
+	//end attact left
+
+	//attact right
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60005);
+	animations->Add(6005, ani);
+	weapon->AddAnimation(6005);
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60001);
+	animations->Add(6001, ani);
+	weapon->AddAnimation(6001);
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60003);
+	animations->Add(6003, ani);
+	weapon->AddAnimation(6003);
+	//end attact right
+
 
 	weapon->SetPosition(70.0f, Y_SOILD - 60);
 	objects.push_back(weapon);
