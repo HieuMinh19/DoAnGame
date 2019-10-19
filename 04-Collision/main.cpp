@@ -210,6 +210,10 @@ void LoadResources()
 	sprites->Add(60011, 136, 37, 160, 63, texWeapon);
 	sprites->Add(60012, 172, 43, 207, 54, texWeapon);
 
+	sprites->Add(60013, 438, 40, 470, 60, texWeapon);
+	sprites->Add(60014, 480, 37, 505, 63, texWeapon);
+	sprites->Add(60015, 555, 43, 576, 68, texWeapon);
+
 	sprites->Add(60020, 63, 70, 80, 101, texWeapon);
 	sprites->Add(60021, 136, 70, 157, 96, texWeapon);
 	sprites->Add(60022, 158, 73, 208, 90, texWeapon);
@@ -255,7 +259,6 @@ void LoadResources()
 	weapon->AddAnimation(6003);
 	//end attact right
 
-
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60010);
 	animations->Add(6010, ani);
@@ -271,7 +274,52 @@ void LoadResources()
 	animations->Add(6012, ani);
 	weapon->AddAnimation(6012);
 
+	//
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60015);
+	animations->Add(6015, ani);
+	weapon->AddAnimation(6015);
 
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60011);
+	animations->Add(6011, ani);
+	weapon->AddAnimation(6011);
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60013);
+	animations->Add(6013, ani);
+	weapon->AddAnimation(6013);
+
+	//
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60020);
+	animations->Add(6020, ani);
+	weapon->AddAnimation(6020);
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60024);
+	animations->Add(6024, ani);
+	weapon->AddAnimation(6024);
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60022);
+	animations->Add(6022, ani);
+	weapon->AddAnimation(6022);
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60025);
+	animations->Add(6025, ani);
+	weapon->AddAnimation(6025);
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60021);
+	animations->Add(6021, ani);
+	weapon->AddAnimation(6021);
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60023);
+	animations->Add(6023, ani);
+	weapon->AddAnimation(6023);
 
 	weapon->SetPosition(70.0f, Y_SOILD - 60);
 	objects.push_back(weapon);
