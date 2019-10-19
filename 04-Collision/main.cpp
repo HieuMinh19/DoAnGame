@@ -205,22 +205,21 @@ void LoadResources()
 	sprites->Add(60001, 160, 30, 135, 5, texWeapon);
 	sprites->Add(60003, 465, 20, 440, 5, texWeapon);
 	sprites->Add(60005, 560, 5, 575, 35, texWeapon);
+	
+	sprites->Add(60010, 63, 40, 80, 70, texWeapon);
+	sprites->Add(60011, 136, 37, 160, 63, texWeapon);
+	sprites->Add(60012, 172, 43, 207, 54, texWeapon);
+
+	sprites->Add(60020, 63, 70, 80, 101, texWeapon);
+	sprites->Add(60021, 136, 70, 157, 96, texWeapon);
+	sprites->Add(60022, 158, 73, 208, 90, texWeapon);
+
+	sprites->Add(60023, 434, 276, 481, 93, texWeapon);
+	sprites->Add(60024, 482, 70, 503, 96, texWeapon);
+	sprites->Add(60025, 560, 73, 505, 101, texWeapon);
+
 
 	weapon = new CMorningstar();
-	//ani = new CAnimation(ATTACT_FRAME_LASTED);
-	//ani->Add(60000);
-	//ani->Add(60004);
-	//ani->Add(60002);
-	//animations->Add(6001, ani);
-	//weapon->AddAnimation(6001);	//morningstar attact left
-
-	//ani = new CAnimation(ATTACT_FRAME_LASTED);
-	//ani->Add(60005);
-	//ani->Add(60001);
-	//ani->Add(60003);
-	//animations->Add(6002, ani);
-	//weapon->AddAnimation(6002);	//morningstar attact right
-
 
 	//attact left
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
@@ -255,6 +254,23 @@ void LoadResources()
 	animations->Add(6003, ani);
 	weapon->AddAnimation(6003);
 	//end attact right
+
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60010);
+	animations->Add(6010, ani);
+	weapon->AddAnimation(6010);
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60014);
+	animations->Add(6014, ani);
+	weapon->AddAnimation(6014);
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(60012);
+	animations->Add(6012, ani);
+	weapon->AddAnimation(6012);
+
 
 
 	weapon->SetPosition(70.0f, Y_SOILD - 60);

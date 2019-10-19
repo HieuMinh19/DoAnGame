@@ -10,19 +10,7 @@ CMorningstar::CMorningstar()
 
 void CMorningstar::Render(float &x_cam, float &y_cam)
 {
-	int ani;
-	if (isActiveLeft) {
-		if (isActiveLeft == -1) {
-			
-			animations[WEAPON_ANI_ATTACT_LEFT1]->Render(x - x_cam, y - y_cam);
-			flagUpdatePos = false;
-		}
-		else {
-			ani = WEAPON_ANI_ATTACT_RIGHT1;
-			animations[ani]->Render(x - x_cam, y - y_cam);
-		}
-		
-	}
+	
 }
 
 void CMorningstar::Render(float& x_cam, float& y_cam, int curentFrame)
@@ -31,21 +19,21 @@ void CMorningstar::Render(float& x_cam, float& y_cam, int curentFrame)
 	if (isActiveLeft) {
 		if (isActiveLeft == -1) {
 			if(curentFrame == 0)
-				animations[WEAPON_ANI_ATTACT_LEFT1]->Render(x - x_cam + 20, y - y_cam);
+				animations[WEAPON_ANI_ATTACT_LEFT1_LV1]->Render(x - x_cam + 20, y - y_cam);
 			else
 				if(curentFrame == 1)
-					animations[WEAPON_ANI_ATTACT_LEFT2]->Render(x - x_cam + 10, y - y_cam + 25);
+					animations[WEAPON_ANI_ATTACT_LEFT2_LV1]->Render(x - x_cam + 10, y - y_cam + 25);
 				else
-					animations[WEAPON_ANI_ATTACT_LEFT3]->Render(x - x_cam + 10, y - y_cam + 15);
+					animations[WEAPON_ANI_ATTACT_LEFT3_LV1]->Render(x - x_cam + 10, y - y_cam + 15);
 		}
 		else {
 			if(curentFrame == 0)
-				animations[WEAPON_ANI_ATTACT_RIGHT1]->Render(x - x_cam - 10, y - y_cam);
+				animations[WEAPON_ANI_ATTACT_RIGHT1_LV1]->Render(x - x_cam - 10, y - y_cam);
 			else
 				if(curentFrame == 1)
-					animations[WEAPON_ANI_ATTACT_RIGHT2]->Render(x - x_cam + 20, y - y_cam  + 5);
+					animations[WEAPON_ANI_ATTACT_RIGHT2_LV1]->Render(x - x_cam + 20, y - y_cam  + 5);
 				else
-					animations[WEAPON_ANI_ATTACT_RIGHT3]->Render(x - x_cam + 50 , y - y_cam + 20);
+					animations[WEAPON_ANI_ATTACT_RIGHT3_LV1]->Render(x - x_cam + 50 , y - y_cam + 20);
 		}
 
 	}
