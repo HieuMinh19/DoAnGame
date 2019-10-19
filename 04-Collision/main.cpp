@@ -218,7 +218,7 @@ void LoadResources()
 	sprites->Add(60021, 136, 70, 157, 96, texWeapon);
 	sprites->Add(60022, 158, 73, 208, 90, texWeapon);
 
-	sprites->Add(60023, 434, 276, 481, 93, texWeapon);
+	sprites->Add(60023, 434, 71, 481, 93, texWeapon);
 	sprites->Add(60024, 482, 70, 503, 96, texWeapon);
 	sprites->Add(60025, 560, 73, 505, 101, texWeapon);
 
@@ -307,9 +307,9 @@ void LoadResources()
 	weapon->AddAnimation(6022);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60025);
-	animations->Add(6025, ani);
-	weapon->AddAnimation(6025);
+	ani->Add(60015);
+	animations->Add(6015, ani);
+	weapon->AddAnimation(6015);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60021);
