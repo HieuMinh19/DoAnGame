@@ -46,12 +46,12 @@ class CMorningstar : public CGameObject
 	*/
 	int isActiveLeft;
 	DWORD attactTime;
-	bool flagUpdatePos = true;
+	
 public:
 	int getLevel() { return this->level; }
 	int getAttact() { return this->isActiveLeft; }
 	void setAttact(int status) { this->isActiveLeft = status; }
-	void setLevel(int lv) { this->level = lv; }
+	void setLevel(int &lv) { this->level = lv; }
 	void Render(float &x_cam, float &y_cam);
 	void Render(float& x_cam, float& y_cam, int currentFram);
 	//void Render(float xSimon, float ySimon, float xCam, float yCam);
