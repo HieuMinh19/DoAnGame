@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Sprites.h"
+#include "Global.h"
 
 
 using namespace std;
@@ -20,6 +21,7 @@ struct CCollisionEvent
 {
 	LPGAMEOBJECT obj;
 	float t, nx, ny;
+	
 	CCollisionEvent(float t, float nx, float ny, LPGAMEOBJECT obj = NULL) { this->t = t; this->nx = nx; this->ny = ny; this->obj = obj; }
 
 	static bool compare(const LPCOLLISIONEVENT &a, LPCOLLISIONEVENT &b)
@@ -48,6 +50,10 @@ public:
 
 	int state;
 
+	//type to filterCollision
+	int coType;
+	vector<int> arrCollisionType;
+
 	DWORD dt; 
 
 	vector<LPANIMATION> animations;
@@ -60,6 +66,7 @@ public:
 	void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }
 
 	int GetState() { return this->state; }
+	int GetType() { return this->coType; }
 
 	void RenderBoundingBox(float &x_cam, float &y_cam);
 

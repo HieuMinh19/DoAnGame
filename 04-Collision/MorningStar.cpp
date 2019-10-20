@@ -1,10 +1,12 @@
 #include "Morningstar.h"
-int a = 1;
 CMorningstar::CMorningstar()
 {
 	level = 3;
 	isActiveLeft = 0;
 	attactTime = GetTickCount();
+	coType = MORNING_STAIR_TYPE;
+	arrCollisionType.push_back(FIRE_TYPE);
+
 }
 
 

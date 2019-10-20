@@ -347,15 +347,15 @@ void LoadResources()
 
 	//add fire enemy
 	LPDIRECT3DTEXTURE9 texFire = textures->Get(ID_TEX_FIRE);
-	sprites->Add(4001, 0, 0, 32, 63, texFire);
-	sprites->Add(4002, 32, 0, 63, 63, texFire);
+	sprites->Add(4001, 0, 0, 16, 31, texFire);
+	sprites->Add(4002, 16, 0, 31, 31, texFire);
 	fire = new CFire();
 	ani = new CAnimation(200);
 	ani->Add(4001);
 	ani->Add(4002);
 	animations->Add(40, ani);
 	fire->AddAnimation(40);
-	fire->SetPosition(20.0f, Y_SOILD-60);
+	fire->SetPosition(20.0f, Y_SOILD-31);
 	objects.push_back(fire);
 
 	objects.push_back(simon);

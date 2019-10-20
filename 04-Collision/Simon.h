@@ -52,6 +52,8 @@ public:
 		this->morningStar = morningStar;
 		isAttact = 0;
 		isJump = true;
+		coType = SIMON_TYPE;
+		arrCollisionType.push_back(BRICK_TYPE);
 	}
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render(float &x_cam, float &y_cam);

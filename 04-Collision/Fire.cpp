@@ -1,5 +1,7 @@
 #include "Fire.h"
 
+CFire::CFire() { coType = FIRE_TYPE; }
+
 void CFire::Render(float &x_cam, float &y_cam)
 {
 	int ani = FIRE_ANI_ACTIVE;

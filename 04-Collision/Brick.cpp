@@ -1,5 +1,7 @@
 #include "Brick.h"
 
+CBrick::CBrick(){ coType = BRICK_TYPE; }
+
 void CBrick::Render(float &x_cam, float &y_cam)
 {
 	animations[0]->Render(x-x_cam, y-x_cam);

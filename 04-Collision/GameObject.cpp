@@ -66,10 +66,18 @@ void CGameObject::CalcPotentialCollisions(
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
+		bool flagCollision = false;
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
-		if (e->t > 0 && e->t <= 1.0f)
-			coEvents.push_back(e);
+		if (e->t > 0 && e->t <= 1.0f) {
+			for (int j = 0; j < arrCollisionType.size(); j++) {
+				if (arrCollisionType[j] == coObjects->at(i)->GetType()) {
+					coEvents.push_back(e);
+					break;
+				}
+			}
+		}
+			
 		else
 			delete e;
 	}

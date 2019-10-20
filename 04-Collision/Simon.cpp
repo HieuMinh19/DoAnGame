@@ -25,9 +25,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		isAttact = 0;
 	}
 
-	if (vy > 0)
-		setJump(true);
-
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -107,6 +104,7 @@ void CSimon::Render(float &x_cam, float &y_cam)
 			(vx > 0) ? ani = SIMON_AN_WALKING_RIGHT : ani = SIMON_ANI_WALKING_LEFT;
 		
 		if (vy < 0) {//jump
+			
 			(nx > 0) ? ani = SIMON_ANI_SIT_LEFT : ani = SIMON_ANI_SIT_RIGHT;
 		}
 		
@@ -117,7 +115,6 @@ void CSimon::Render(float &x_cam, float &y_cam)
 			dx = 0;			//don't jump
 			vx = 0;			//don't moving
 			(nx > 0) ? ani = SIMON_ANI_ATTACT_RIGHT : ani = SIMON_ANI_ATTACT_LEFT;
-			DebugOut(L"[INFO] frame: %d\n", animations[ani]->getCurrentFrame());
 			morningStar->setAttact(nx);
 			morningStar->Render(x_cam, y_cam, animations[ani]->getCurrentFrame());
 		}
@@ -154,11 +151,12 @@ void CSimon::SetState(int state)
 			}
 			break;
 		case SIMON_STATE_JUMP:
-			if (isJump) {
+			DebugOut(L"[INFO] Vy: %d\n", vy);
+			if (vy <= float(0)) {
 				vx = 0;
 				vy = -SIMON_JUMP_SPEED_Y;
-				isJump = false;
 			}
+			
 			break;
 		case SIMON_STATE_IDLE:
 			vx = 0;
