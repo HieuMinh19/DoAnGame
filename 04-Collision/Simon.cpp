@@ -2,6 +2,7 @@
 #include "debug.h"
 #include "Simon.h"
 #include "Game.h"
+#include "Fire.h"
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -15,16 +16,16 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
-	// turn off collision when die 
-	if (state != SIMON_STATE_DIE)
-		CalcPotentialCollisions(coObjects, coEvents);
 	// reset attact timer 
-
-	if ( GetTickCount() - attactTime > ATTACT_FRAME_LASTED * 3)	{
+	if (GetTickCount() - attactTime > ATTACT_FRAME_LASTED * 3) {
 		attactTime = 0;
 		isAttact = 0;
 	}
 
+	// turn off collision when die 
+	if (state != SIMON_STATE_DIE)
+		CalcPotentialCollisions(coObjects, coEvents);
+	
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -78,6 +79,18 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 		}*/
+
+
+		//collision logic with fire
+		for (UINT i = 0; i < coEventsResult.size(); i++){
+			LPCOLLISIONEVENT e = coEventsResult[i];
+			if (dynamic_cast<CFire*>(e->obj))
+			{
+				CFire* fire = dynamic_cast<CFire*>(e->obj);
+				fire->SetState(STATE_DIE);
+			}
+		}
+
 	}
 
 	// clean up collision events
@@ -151,12 +164,10 @@ void CSimon::SetState(int state)
 			}
 			break;
 		case SIMON_STATE_JUMP:
-			DebugOut(L"[INFO] Vy: %d\n", vy);
-			if (vy <= float(0)) {
+			if (y > 110) {
 				vx = 0;
 				vy = -SIMON_JUMP_SPEED_Y;
 			}
-			
 			break;
 		case SIMON_STATE_IDLE:
 			vx = 0;

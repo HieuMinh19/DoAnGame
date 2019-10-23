@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Global.h"
 #include "MorningStar.h"
+#include "Brick.h"
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 220
@@ -53,7 +54,9 @@ public:
 		isAttact = 0;
 		isJump = true;
 		coType = SIMON_TYPE;
-		arrCollisionType.push_back(BRICK_TYPE);
+		listCollisionType.push_back(BRICK_TYPE);
+		listCollisionType.push_back(FIRE_TYPE);
+		
 	}
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render(float &x_cam, float &y_cam);

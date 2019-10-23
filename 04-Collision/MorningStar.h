@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "debug.h"
 #include "Global.h"
+#include "Fire.h"
 
 #define BBOX_WIDTH_LV1	30
 #define BB_HEIGHT		10

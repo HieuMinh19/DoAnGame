@@ -52,7 +52,7 @@ public:
 
 	//type to filterCollision
 	int coType;
-	vector<int> arrCollisionType;
+	vector<int> listCollisionType;
 
 	DWORD dt; 
 

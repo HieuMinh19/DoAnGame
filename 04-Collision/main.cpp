@@ -13,7 +13,9 @@
 #include "Fire.h"
 #include "BackGround.h"
 #include "MorningStar.h"
+#include "Items.h"
 #include "Global.h"
+
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"04 - Collision"
@@ -29,6 +31,7 @@
 #define ID_TEX_BACKGROUND	400
 #define ID_TEX_FIRE			500
 #define ID_TEX_WEAPON		600
+#define ID_TEX_HEATH_ITEM	700
 
 #define SIMON_ANI_IDLE_RIGHT	400
 #define SIMON_ANI_IDLE_LEFT		401 
@@ -47,6 +50,8 @@ CSimon *simon;
 CBackGround *background;
 CFire *fire;
 CMorningstar *weapon;
+CItems* items;
+
 
 vector<LPGAMEOBJECT> objects;
 
@@ -128,6 +133,7 @@ void LoadResources()
 	textures->Add(ID_TEX_FIRE, L"textures\\fire.png", D3DCOLOR_XRGB(255, 0, 255));
 	//sprite bi dao nguoc -> can lay right_bottom top_left
 	textures->Add(ID_TEX_WEAPON, L"textures\\Resources\\morningstar.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_HEATH_ITEM, L"textures\\Resources\\item\\0.png", D3DCOLOR_XRGB(255, 0, 255));
 
 	CSprites * sprites = CSprites::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
@@ -148,6 +154,11 @@ void LoadResources()
 	sprites->Add(30001, 5, 14, 21, 29, texEnemy);
 	sprites->Add(30002, 25, 14, 41, 29, texEnemy);
 	sprites->Add(30003, 45, 21, 61, 29, texEnemy); // die sprite
+
+	LPDIRECT3DTEXTURE9 texHeathItem = textures->Get(ID_TEX_HEATH_ITEM);
+	sprites->Add(70000, 1, 1, 15, 15, texHeathItem);
+
+	
 
 	LPANIMATION ani;	
 
@@ -334,6 +345,8 @@ void LoadResources()
 	simon->AddAnimation(SIMON_ANI_DOWN_LEFT);
 	simon->AddAnimation(SIMON_ANI_ATTACT_LEFT);
 	simon->AddAnimation(SIMON_ANI_ATTACT_RIGHT);
+
+	
 	
 	// background
 	LPDIRECT3DTEXTURE9 texBG = textures->Get(ID_TEX_BACKGROUND);
@@ -345,21 +358,29 @@ void LoadResources()
 	background->AddAnimation(701);
 	objects.push_back(background);
 
+	ani = new CAnimation(FRAME_LASTED);
+	ani->Add(70000);
+	animations->Add(7000, ani);
+
+	items = new CItems();
+	items->AddAnimation(7000);
+	items->SetPosition(0.0f, Y_SOILD - 20);
+	objects.push_back(items);
+
 	//add fire enemy
 	LPDIRECT3DTEXTURE9 texFire = textures->Get(ID_TEX_FIRE);
 	sprites->Add(4001, 0, 0, 16, 31, texFire);
 	sprites->Add(4002, 16, 0, 31, 31, texFire);
-	fire = new CFire();
+	fire = new CFire(items);
 	ani = new CAnimation(200);
 	ani->Add(4001);
 	ani->Add(4002);
 	animations->Add(40, ani);
 	fire->AddAnimation(40);
-	fire->SetPosition(20.0f, Y_SOILD-31);
+	fire->SetPosition(50.0f, Y_SOILD-31);
 	objects.push_back(fire);
 
 	objects.push_back(simon);
-
 
 	//khoi tao hang gach ngang
 	for (int i = 0; i < 50; i++)
@@ -369,7 +390,6 @@ void LoadResources()
 		brick->SetPosition(0 + i * 16.0f, Y_SOILD);
 		objects.push_back(brick);
 	}
-	
 }
 
 /*
@@ -388,6 +408,8 @@ void Update(DWORD dt)
 
 	for (int i = 0; i < objects.size(); i++)
 	{
+		if (objects[i]->GetState() == STATE_DIE && objects[i])
+			objects[i]->x = -1000;
 		objects[i]->Update(dt,&coObjects);
 	}
 }
