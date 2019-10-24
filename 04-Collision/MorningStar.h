@@ -4,6 +4,7 @@
 #include "Global.h"
 #include "Fire.h"
 
+
 #define BBOX_WIDTH_LV1	30
 #define BB_HEIGHT		10
 
@@ -47,6 +48,7 @@ class CMorningstar : public CGameObject
 	*/
 	int isActiveLeft;
 	DWORD attactTime;
+	bool isLastFram;
 	
 public:
 	int getLevel() { return this->level; }
@@ -58,6 +60,8 @@ public:
 	//void Render(float xSimon, float ySimon, float xCam, float yCam);
 	virtual void GetBoundingBox(float &l, float &t, float &r, float &b);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
+
+	void isCollision(vector<LPGAMEOBJECT>* coObjects, vector<LPGAMEOBJECT>& coEventsResult);
 	CMorningstar();
 	~CMorningstar();
 };

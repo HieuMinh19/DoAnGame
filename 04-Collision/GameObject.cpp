@@ -1,4 +1,4 @@
-#include <d3dx9.h>
+﻿#include <d3dx9.h>
 #include <algorithm>
 #include "debug.h"
 #include "Textures.h"
@@ -58,7 +58,7 @@ LPCOLLISIONEVENT CGameObject::SweptAABBEx(LPGAMEOBJECT coO)
 	Calculate potential collisions with the list of colliable objects 
 	
 	coObjects: the list of colliable objects
-	coEvents: list of potential collisions
+	coEvents: list of potential collisions	(ds cac va cham tiềm năng)
 */
 void CGameObject::CalcPotentialCollisions(
 	vector<LPGAMEOBJECT> *coObjects, 
@@ -66,7 +66,7 @@ void CGameObject::CalcPotentialCollisions(
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
-		bool flagCollision = false;
+		//bool flagCollision = false;
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
 		if (e->t > 0 && e->t <= 1.0f) {

@@ -1,6 +1,10 @@
 #pragma once
 #define FRAME_LASTED		100			//time to live of 1 frame of list animation 
-#define ATTACT_FRAME_LASTED	150 
+#define ATTACT_FRAME_LASTED	150
+
+
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 220
 
 #define STATE_DIE			1000
 

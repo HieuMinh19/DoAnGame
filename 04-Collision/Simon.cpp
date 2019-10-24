@@ -4,12 +4,23 @@
 #include "Game.h"
 #include "Fire.h"
 
+CSimon::CSimon(CMorningstar* morningStar)
+{
+	this->morningStar = morningStar;
+	isAttact = 0;
+	isJump = true;
+	coType = SIMON_TYPE;
+	listCollisionType.push_back(BRICK_TYPE);
+	//listCollisionType.push_back(FIRE_TYPE);
+}
+
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
 
 	// Simple fall down
+	//DebugOut(L"dt simon: %f\n", dt);
 	vy += SIMON_GRAVITY * dt;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -96,13 +107,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) {
 		delete coEvents[i];
-	}
-
-	//770 la kich thuoc  map, den 730 phai dung lai
-	if (vx > 0 && x > 730)
-		x = 730;
-	if (vx < 0 && x < 0) x = 0;
-	
+	}	
 }
 
 void CSimon::Render(float &x_cam, float &y_cam)
@@ -138,10 +143,10 @@ void CSimon::Render(float &x_cam, float &y_cam)
 	//return mau binh thuong sau thoi gian khong va cham 
 	int alpha = 255;
 	//if (untouchable) alpha = 128;
+
+	animations[ani]->Render(x-x_cam, y-y_cam, alpha);
 	float x_temp = x - x_cam;
 	float y_temp = y - y_cam;
-	animations[ani]->Render(x-x_cam, y-y_cam, alpha);
-	
 	RenderBoundingBox(x_temp,y_temp);
 }
 

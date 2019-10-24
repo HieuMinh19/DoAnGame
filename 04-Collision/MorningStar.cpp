@@ -1,12 +1,54 @@
 #include "Morningstar.h"
+bool a = true;
+
+void CMorningstar::isCollision(vector<LPGAMEOBJECT>* coObjects, vector<LPGAMEOBJECT>& coEventsResult)
+{
+	//left, top right, bottom object
+	float Lob, Rob, Tob, Bob;
+	float l, t, r, b;
+
+	GetBoundingBox(l, t, r, b);
+	
+	for (UINT i = 0; i < coObjects->size(); i++) {
+		if (coObjects->at(i)->GetType() == FIRE_TYPE &&  a) {
+			//DebugOut(L"vao: %d\n", coObjects->at(i)->GetType());
+			GetBoundingBox(Lob, Tob, Rob, Bob);
+			DebugOut(L"left: %f\n", Lob);
+			DebugOut(L"top: %f\n", Tob);
+			DebugOut(L"right: %f\n", Rob);
+			DebugOut(L"bot: %f\n", Bob);
+			a = false;
+		}
+			
+		coObjects->at(i)->GetBoundingBox(Lob, Tob, Rob, Bob);
+
+		if (l < Lob && Lob < r) {
+			if (t < Tob && Tob < b) {
+				coEventsResult.push_back(coObjects->at(i));
+			}
+			
+			if (Tob < t && t < Bob)
+				coEventsResult.push_back(coObjects->at(i));
+		}
+
+		if (l < Rob && Rob < r) {
+			if (Tob < b && b < Bob)
+				coEventsResult.push_back(coObjects->at(i));
+
+			if (Tob < t && t < Bob)
+				coEventsResult.push_back(coObjects->at(i));
+		}
+	}
+}
 CMorningstar::CMorningstar()
 {
 	level = 3;
 	isActiveLeft = 0;
 	attactTime = GetTickCount();
+	isLastFram = false;
+
 	coType = MORNING_STAIR_TYPE;
 	listCollisionType.push_back(FIRE_TYPE);
-
 }
 
 
@@ -33,11 +75,14 @@ void CMorningstar::Render(float& x_cam, float& y_cam, int curentFrame)
 					if (level == 1)
 						animations[WEAPON_ANI_ATTACT_LEFT2_LV1]->Render(x - x_cam + 10, y - y_cam + 25);
 					else
-						(level == 2) ?
-							animations[WEAPON_ANI_ATTACT_LEFT2_LV2]->Render(x - x_cam - 10, y - y_cam - 10) :
+						if (level == 2) {
+							animations[WEAPON_ANI_ATTACT_LEFT2_LV2]->Render(x - x_cam - 10, y - y_cam - 10);
+						}
+						else {
 							animations[WEAPON_ANI_ATTACT_LEFT2_LV3]->Render(x - x_cam + 10, y - y_cam - 10);
+
+						}
 				}
-					
 				else {
 					if (level == 1)
 						animations[WEAPON_ANI_ATTACT_LEFT3_LV1]->Render(x - x_cam + 10, y - y_cam + 15);
@@ -45,10 +90,11 @@ void CMorningstar::Render(float& x_cam, float& y_cam, int curentFrame)
 						if (level == 2)
 							animations[WEAPON_ANI_ATTACT_LEFT3_LV2]->Render(x - x_cam - 30, y - y_cam + 10);
 						else {
-							float xBBox = x - x_cam - 40;
-							float yBBox = y - y_cam;
+							//x = x - x_cam - 40;
+							//y = y - y_cam;
+							this->isLastFram = true;
 							animations[WEAPON_ANI_ATTACT_LEFT3_LV3]->Render(x - x_cam - 40, y - y_cam);
-							RenderBoundingBox(xBBox, yBBox);
+							RenderBoundingBox(x, y);
 						}
 				}	
 		}
@@ -79,8 +125,12 @@ void CMorningstar::Render(float& x_cam, float& y_cam, int curentFrame)
 						if (level == 2)
 							animations[WEAPON_ANI_ATTACT_RIGHT3_LV2]->Render(x - x_cam + 15, y - y_cam);
 						else {
+							this->isLastFram = true;
+							//x = x - x_cam + 10;
+							//y = y - y_cam;
 							
 							animations[WEAPON_ANI_ATTACT_RIGHT3_LV3]->Render(x - x_cam + 10, y - y_cam);
+
 							/*x = x - x_cam + 10;
 							y = y - y_cam;*/
 							RenderBoundingBox(x, y);
@@ -94,42 +144,52 @@ void CMorningstar::Render(float& x_cam, float& y_cam, int curentFrame)
 
 void CMorningstar::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	left = x - 50;
-	top = y;
-	right = x + BBOX_WIDTH_LV1 + 10;
-	bottom = y + BB_HEIGHT;
+	if (isLastFram) {
+		left = x;
+		top = y;
+		right = x + BBOX_WIDTH_LV1;
+		bottom = y + BB_HEIGHT;
+	}
+	
 }
 
 void CMorningstar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
 
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
+	//vector<LPCOLLISIONEVENT> coEvents;
+	//vector<LPCOLLISIONEVENT> coEventsResult;
 
-	coEvents.clear();
+	//coEvents.clear();
 
-	CalcPotentialCollisions(coObjects, coEvents);
+	//CalcPotentialCollisions(coObjects, coEvents);
 
-	float min_tx, min_ty, nx = 0, ny;
-	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
-	// block 
-	x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bi t to avoid overlapping next frame
-	y += min_ty * dy + ny * 0.4f;
+	//float min_tx, min_ty, nx = 0, ny;
+	//FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+	//// block 
+	//x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bi t to avoid overlapping next frame
+	//y += min_ty * dy + ny * 0.4f;
 
-	//collision logic with fire
-	for (UINT i = 0; i < coEventsResult.size(); i++) {
-		LPCOLLISIONEVENT e = coEventsResult[i];
-		if (dynamic_cast<CFire*>(e->obj))
-		{
-			DebugOut(L"[INFO] Fire: %d\n", i);
-			CFire* fire = dynamic_cast<CFire*>(e->obj);
-			fire->SetState(STATE_DIE);
+	////collision logic with fire
+	//for (UINT i = 0; i < coEventsResult.size(); i++) {
+	//	LPCOLLISIONEVENT e = coEventsResult[i];
+	//	if (dynamic_cast<CFire*>(e->obj))
+	//	{
+	//		CFire* fire = dynamic_cast<CFire*>(e->obj);
+	//		fire->SetState(STATE_DIE);
+	//	}
+	//}
+	if (isLastFram) {
+		vector<LPGAMEOBJECT> collisionObjects;
+		isCollision(coObjects, collisionObjects);
+
+		for (UINT i = 0; i < collisionObjects.size(); i++) {
+			if (collisionObjects[i]->GetType() == FIRE_TYPE) {
+				collisionObjects[i]->SetState(STATE_DIE);
+			}
 		}
 	}
-
-
-	
+		
 	if (GetTickCount() - attactTime < ATTACT_FRAME_LASTED) {
 		y -= 15;
 		x += 22;
@@ -152,7 +212,7 @@ void CMorningstar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				y += 20;
 	}
 
-	if (GetTickCount() - attactTime > ATTACT_FRAME_LASTED * 3) {		//100 is time to live of frame
+	if (GetTickCount() - attactTime > ATTACT_FRAME_LASTED * 3) {	
 		attactTime = 0;
 		isActiveLeft = 0;
 	}	

@@ -17,7 +17,6 @@ void CFire::Render(float &x_cam, float &y_cam)
 	animations[ani]->Render(x-x_cam, y-y_cam);
 	if(this->state != STATE_DIE)
 		GetPosition(this->item->x, this->item->y);
-	DebugOut(L"item: %f\n", this->item->x);
 	//RenderBoundingBox();
 }
 
@@ -53,16 +52,11 @@ void CFire::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state == STATE_DIE) {	
 		//DebugOut(L"xItem: %f\n", xItem);
 		this->item->setActive(true);
-		this->item->Render(x, yItem);
-		item->SetSpeed(0, 0);
+		//this->item->Render(x, yItem);
+		//item->SetSpeed(0, 0);
 
 		x -= 1000;
 		//DebugOut(L"x x: %f\n", x);
 		//this->item->Render(x, y);
 	}
-		
-
-	//
-	// TO-DO: make sure Goomba can interact with the world and to each of them too!
-	// 
 }

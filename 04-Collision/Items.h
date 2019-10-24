@@ -2,15 +2,20 @@
 #include "GameObject.h"
 #include "Global.h"
 #include "debug.h"
+#include "Brick.h"
 
 #define HEALTH_ANI_ITEM 0
-#define HEATH_BBOX_WIDTH 23
-#define HEATH_BBOX_HEIGHT 19
+#define STAR_ANI_ITEM	1
 
-#define ITEM_GRAVITY	0.002f
+
+#define HEATH_BBOX_WIDTH 23
+#define HEATH_BBOX_HEIGHT 10
+
+#define ITEM_GRAVITY	0.05f
 
 class CItems: public CGameObject
 {
+	int itemType;
 	bool isActive;
 public:
 	CItems();
