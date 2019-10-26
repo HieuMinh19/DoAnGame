@@ -8,8 +8,8 @@
 #define STAR_ANI_ITEM	1
 
 
-#define HEATH_BBOX_WIDTH 23
-#define HEATH_BBOX_HEIGHT 10
+#define HEATH_BBOX_WIDTH 16
+#define HEATH_BBOX_HEIGHT 16
 
 #define ITEM_GRAVITY	0.05f
 

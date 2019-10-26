@@ -31,20 +31,21 @@
 #define SIMON_ANI_ATTACT_RIGHT			7
 #define SIMON_ANI_DIE					8
 
-#define SIMON_BBOX_WIDTH  15
-#define SIMON_BBOX_HEIGHT 27
-#define SIMON_SIT_BBOX_HEIGHT  22
+#define SIMON_BBOX_WIDTH		15
+#define SIMON_BBOX_HEIGHT		32
+#define SIMON_SIT_BBOX_HEIGHT	22
 
 #define SIMON_UNTOUCHABLE_TIME 5000
 #define SIMON_ATTACT_TIME	1000
 
 class CSimon : public CGameObject
 {
-	bool isJump;
+	
 	DWORD attactTime;
 	CMorningstar* morningStar;
 
-public: 
+public:
+	bool isJump;
 	int isAttact;
 	CSimon(CMorningstar* morningStar);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);

@@ -22,6 +22,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// Simple fall down
 	//DebugOut(L"dt simon: %f\n", dt);
 	vy += SIMON_GRAVITY * dt;
+
+	if (this->y < 121)
+		isJump = true;
+	else
+		isJump = false;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -134,7 +139,11 @@ void CSimon::Render(float &x_cam, float &y_cam)
 			vx = 0;			//don't moving
 			(nx > 0) ? ani = SIMON_ANI_ATTACT_RIGHT : ani = SIMON_ANI_ATTACT_LEFT;
 			morningStar->setAttact(nx);
-			morningStar->Render(x_cam, y_cam, animations[ani]->getCurrentFrame());
+			/*if (animations[ani]->getCurrentFrame() == 2) {
+				DebugOut(L"Last fram: %d\n", animations[ani]->getLastFrame());
+				DebugOut(L"current fram: %d\n", animations[ani]->getCurrentFrame());
+			}*/
+			morningStar->Render(x_cam, y_cam, animations[ani]->getCurrentFrame(), animations[ani]->getLastFrame());
 		}
 			
 		

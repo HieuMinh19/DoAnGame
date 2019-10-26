@@ -23,7 +23,7 @@
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(0, 0, 0)
 
 #define MAX_FRAME_RATE	120
-#define Y_SOILD			150			//y position of enemy in the ground
+#define Y_SOILD			145			//y position of enemy in the ground
 
 #define ID_TEX_SIMON		100
 #define ID_TEX_ENEMY		200
@@ -96,10 +96,12 @@ void CSampleKeyHander::KeyState(BYTE *states)
 {
 	// disable control key when Mario die 
 	if (simon->GetState() == SIMON_STATE_DIE) return;
-	if (game->IsKeyDown(DIK_RIGHT)) 
-		simon->SetState(SIMON_STATE_WALKING_RIGHT);		
-	else if (game->IsKeyDown(DIK_LEFT))
+	if (game->IsKeyDown(DIK_RIGHT)) {
+		simon->SetState(SIMON_STATE_WALKING_RIGHT);
+	}
+	else if (game->IsKeyDown(DIK_LEFT)) {
 		simon->SetState(SIMON_STATE_WALKING_LEFT);
+	}
 	else
 		simon->SetState(SIMON_STATE_IDLE);
 	if(game->IsKeyDown(DIK_DOWN))
@@ -135,7 +137,7 @@ void LoadResources()
 	//sprite bi dao nguoc -> can lay right_bottom top_left
 	textures->Add(ID_TEX_WEAPON, L"textures\\Resources\\morningstar.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_HEATH_ITEM, L"textures\\Resources\\item\\0.png", D3DCOLOR_XRGB(255, 0, 255));
-	textures->Add(ID_TEX_STAR_ITEM, L"textures\\Resources\\item\\3.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_STAR_ITEM, L"textures\\Resources\\item\\3.2.png", D3DCOLOR_XRGB(255, 0, 255));
 
 	CSprites * sprites = CSprites::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
@@ -160,7 +162,7 @@ void LoadResources()
 	LPDIRECT3DTEXTURE9 texHeathItem = textures->Get(ID_TEX_HEATH_ITEM);
 	sprites->Add(70000, 1, 1, 15, 15, texHeathItem);
 	LPDIRECT3DTEXTURE9 texStarItem = textures->Get(ID_TEX_STAR_ITEM);
-	sprites->Add(80003, 0, 0, 32, 32, texStarItem);
+	sprites->Add(80003, 0, 0, 16, 16, texStarItem);
 
 	LPANIMATION ani;	
 
@@ -374,10 +376,10 @@ void LoadResources()
 
 	items = new CItems();
 	items->AddAnimation(7000);
-	items->SetPosition(0.0f, Y_SOILD - 20);
+	items->SetPosition(0.0f, Y_SOILD - 25);
 	
 	items->AddAnimation(8003);
-	items->SetPosition(0.0f, Y_SOILD - 20);
+	items->SetPosition(0.0f, Y_SOILD - 25);
 	
 	objects.push_back(items);
 
@@ -391,7 +393,7 @@ void LoadResources()
 	ani->Add(4002);
 	animations->Add(40, ani);
 	fire->AddAnimation(40);
-	fire->SetPosition(70.0f, Y_SOILD-31);
+	fire->SetPosition(70.0f, Y_SOILD-30);
 	objects.push_back(fire);
 
 	objects.push_back(simon);

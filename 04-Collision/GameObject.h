@@ -46,8 +46,7 @@ public:
 	float vy;
 
 	int nx;	 
-
-
+	   
 	int state;
 
 	//type to filterCollision

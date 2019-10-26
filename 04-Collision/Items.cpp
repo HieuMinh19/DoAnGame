@@ -2,15 +2,13 @@
 
 CItems::CItems()
 {
-	coType = ITEM_TYPE;
-
 	//random items
 	srand((unsigned)time(0));
 	itemType = rand() % 2 + 1;
-	
+
+	coType = ITEM_TYPE;
 	isActive = false;
 	vy = ITEM_GRAVITY;
-
 	listCollisionType.push_back(BRICK_TYPE);
 }
 
@@ -44,7 +42,6 @@ void CItems::GetBoundingBox(float& l, float& t, float& r, float& b)
 void CItems::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
-	y += vy*dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -54,13 +51,10 @@ void CItems::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	int i = 0;
 	if (isActive) {
 		CalcPotentialCollisions(coObjects, coEvents);
-		
 	}
 	
-	
 	// No collision occured, proceed normally
-	if (coEvents.size() == 0)
-	{
+	if (coEvents.size() == 0){
 		x += dx;
 		y += dy;
 	}
@@ -77,19 +71,6 @@ void CItems::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	}
 	
-	//collision logic with brick
-	for (UINT i = 0; i < coEventsResult.size(); i++) {
-		LPCOLLISIONEVENT e = coEventsResult[i];
-		
-		if (dynamic_cast<CBrick*>(e->obj))
-		{
-			DebugOut(L"Co va cham: %d\n", vx);
-			//CBrick* brick = dynamic_cast<CBrick*>(e->obj);
-			//brick->SetState(STATE_DIE);
-			
-		}
-	}
-
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) {
 		delete coEvents[i];
