@@ -1,7 +1,4 @@
 #include "Morningstar.h"
-bool a = true;
-
-
 void CMorningstar::isCollision(vector<LPGAMEOBJECT>* coObjects, vector<LPGAMEOBJECT>& coEventsResult)
 {
 	//left, top right, bottom object
@@ -32,7 +29,7 @@ void CMorningstar::isCollision(vector<LPGAMEOBJECT>* coObjects, vector<LPGAMEOBJ
 }
 CMorningstar::CMorningstar()
 {
-	level = 3;
+	level = 1;
 	isActiveLeft = 0;
 	attactTime = GetTickCount();
 	isLastFram = false;
@@ -54,10 +51,12 @@ void CMorningstar::Render(float& x_cam, float& y_cam, int curentFrame, int lastF
 			if (curentFrame == 0) {
 				if (level == 1)
 					animations[WEAPON_ANI_ATTACT_LEFT1_LV1]->Render(x - x_cam + 20, y - y_cam);
-				else
+				else {
 					(level == 2) ?
 						animations[WEAPON_ANI_ATTACT_LEFT1_LV2]->Render(x - x_cam + 20, y - y_cam) :
 						animations[WEAPON_ANI_ATTACT_LEFT1_LV3]->Render(x - x_cam + 20, y - y_cam);
+				}
+					
 			}
 			else
 				if (curentFrame == 1) {
@@ -69,23 +68,37 @@ void CMorningstar::Render(float& x_cam, float& y_cam, int curentFrame, int lastF
 						}
 						else {
 							animations[WEAPON_ANI_ATTACT_LEFT2_LV3]->Render(x - x_cam + 10, y - y_cam - 10);
-
 						}
 				}
 				else {
-					if (level == 1)
-						animations[WEAPON_ANI_ATTACT_LEFT3_LV1]->Render(x - x_cam + 10, y - y_cam + 15);
-					else
-						if (level == 2)
-							animations[WEAPON_ANI_ATTACT_LEFT3_LV2]->Render(x - x_cam - 30, y - y_cam + 10);
-						else {
-							if (lastFram != curentFrame) {
-								x = x - x_cam - 40;
-								y = y - y_cam;
-							}
-							animations[WEAPON_ANI_ATTACT_LEFT3_LV3]->Render(x, y);
-							RenderBoundingBox(x, y);
+					if (level == 1) {
+						if (lastFram == curentFrame - 1) {
+							x += 10;
+							y += 15;
 						}
+						this->isLastFram = true;
+						animations[WEAPON_ANI_ATTACT_LEFT3_LV1]->Render(x - x_cam, y - y_cam);
+					}
+					else {
+						if (level == 2) {
+							if (lastFram == curentFrame - 1) {
+								x = x - x_cam - 30;
+								y = y - y_cam + 10;
+							}
+							this->isLastFram = true;
+							animations[WEAPON_ANI_ATTACT_LEFT3_LV2]->Render(x, y);
+						}
+							
+						else {
+							if (lastFram == curentFrame - 1) {
+								x -= 40;
+							}
+							this->isLastFram = true;
+							animations[WEAPON_ANI_ATTACT_LEFT3_LV3]->Render(x - x_cam, y - y_cam);
+		
+						}
+					}
+						
 				}	
 		}
 		else {
@@ -109,46 +122,62 @@ void CMorningstar::Render(float& x_cam, float& y_cam, int curentFrame, int lastF
 							animations[WEAPON_ANI_ATTACT_RIGHT2_LV3]->Render(x - x_cam, y - y_cam - 10);
 				}
 				else {
-					if (level == 1)
-						animations[WEAPON_ANI_ATTACT_RIGHT3_LV1]->Render(x - x_cam + 50, y - y_cam + 20);
+					if (level == 1) {
+						if (lastFram == curentFrame - 1) {
+							DebugOut(L"x: %f\n", x);
+							x += 50;
+							y += 20;
+						}
+						this->isLastFram = true;
+						animations[WEAPON_ANI_ATTACT_RIGHT3_LV1]->Render(x - x_cam, y - y_cam);
+					}
 					else
 						if (level == 2) {
-							animations[WEAPON_ANI_ATTACT_RIGHT3_LV2]->Render(x - x_cam + 15, y - y_cam);
+							if (lastFram == curentFrame - 1) {
+								x += 20;
+							}
+						
+							this->isLastFram = true;
+							animations[WEAPON_ANI_ATTACT_RIGHT3_LV2]->Render(x - x_cam, y - y_cam);
 						}
 						else {
-						
 							if (lastFram == curentFrame - 1) {
-								DebugOut(L"co vao %d\n", x);
-								x = x - x_cam + 10;
-								y = y - y_cam;
+								x += 10;
 							}														
-							animations[WEAPON_ANI_ATTACT_RIGHT3_LV3]->Render(x, y);
+							animations[WEAPON_ANI_ATTACT_RIGHT3_LV3]->Render(x - x_cam, y - y_cam);
 							this->isLastFram = true;
-							RenderBoundingBox(x, y);
 						}
 				}
 		}
 	}
-	
+	RenderBoundingBox(x_cam, y_cam);
 }
 
 
 void CMorningstar::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
+
 	left = x;
 	top = y;
 	if (level == 1) {
-		right = x + BBOX_WIDTH_LV1;
+
+		right = left + BBOX_WIDTH_LV1;
 	}
 	else {
-		(level == 2) ? right = x + BBOX_WIDTH_LV2 : right = x + BBOX_WIDTH_LV3;
+		right = (level == 2) ? left + BBOX_WIDTH_LV2 : left + BBOX_WIDTH_LV3;
 	}
-	bottom = y + BB_HEIGHT;	
+	bottom = top + BB_HEIGHT;	
 }
 
 void CMorningstar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
+
+	if (GetTickCount() - attactTime > ATTACT_FRAME_LASTED * 3) {
+		attactTime = 0;
+		isActiveLeft = 0;
+		isLastFram = false;
+	}
 
 	if (isLastFram) {
 		vector<LPGAMEOBJECT> collisionObjects;
@@ -161,13 +190,6 @@ void CMorningstar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 		}
 	}
-		
-
-	if (GetTickCount() - attactTime > ATTACT_FRAME_LASTED * 3) {	
-		attactTime = 0;
-		isActiveLeft = 0;
-		isLastFram = false;
-	}	
 }
 
 CMorningstar::~CMorningstar()

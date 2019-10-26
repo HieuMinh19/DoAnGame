@@ -17,7 +17,7 @@ void CFire::Render(float &x_cam, float &y_cam)
 	animations[ani]->Render(x-x_cam, y-y_cam);
 	if(this->state != STATE_DIE)
 		GetPosition(this->item->x, this->item->y);
-	//RenderBoundingBox();
+	RenderBoundingBox(x_cam, y_cam);
 }
 
 void CFire::GetBoundingBox(float &l, float &t, float &r, float &b)

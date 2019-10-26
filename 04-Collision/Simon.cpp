@@ -20,7 +20,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	// Simple fall down
-	//DebugOut(L"dt simon: %f\n", dt);
 	vy += SIMON_GRAVITY * dt;
 
 	if (this->y < 121)
@@ -33,7 +32,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	coEvents.clear();
 
 	// reset attact timer 
-	if (GetTickCount() - attactTime > ATTACT_FRAME_LASTED * 3) {
+	if (GetTickCount() - attactTime >= ATTACT_FRAME_LASTED * 3) {
 		attactTime = 0;
 		isAttact = 0;
 	}
@@ -118,6 +117,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 void CSimon::Render(float &x_cam, float &y_cam)
 {
 	int ani;
+
 	if (state == SIMON_STATE_DIE)
 		ani = SIMON_ANI_DIE;
 	else {
@@ -137,26 +137,20 @@ void CSimon::Render(float &x_cam, float &y_cam)
 		if (isAttact){
 			dx = 0;			//don't jump
 			vx = 0;			//don't moving
-			(nx > 0) ? ani = SIMON_ANI_ATTACT_RIGHT : ani = SIMON_ANI_ATTACT_LEFT;
-			morningStar->setAttact(nx);
-			/*if (animations[ani]->getCurrentFrame() == 2) {
-				DebugOut(L"Last fram: %d\n", animations[ani]->getLastFrame());
-				DebugOut(L"current fram: %d\n", animations[ani]->getCurrentFrame());
-			}*/
-			morningStar->Render(x_cam, y_cam, animations[ani]->getCurrentFrame(), animations[ani]->getLastFrame());
+			ani = (nx > 0) ? SIMON_ANI_ATTACT_RIGHT : SIMON_ANI_ATTACT_LEFT;
+			
 		}
 			
 		
 	}
 	//mau bouding box
-	//return mau binh thuong sau thoi gian khong va cham 
-	int alpha = 255;
-	//if (untouchable) alpha = 128;
+	animations[ani]->Render(x - x_cam, y - y_cam, 255);
+	if (isAttact) {
+		morningStar->setAttact(nx);
+		morningStar->Render(x_cam, y_cam, animations[ani]->getCurrentFrame(), animations[ani]->getLastFrame());
+	}
 
-	animations[ani]->Render(x-x_cam, y-y_cam, alpha);
-	float x_temp = x - x_cam;
-	float y_temp = y - y_cam;
-	RenderBoundingBox(x_temp,y_temp);
+	RenderBoundingBox(x_cam, y_cam);
 }
 
 void CSimon::SetState(int state)
@@ -200,9 +194,14 @@ void CSimon::SetState(int state)
 
 void CSimon::StartAttact()
 {
+	
 	if (!isAttact) {
+		int ani = (nx > 0) ? SIMON_ANI_ATTACT_RIGHT : SIMON_ANI_ATTACT_LEFT;
+		animations[ani]->currentFrame = -1;
 		isAttact = 1; 
 		attactTime = GetTickCount();
+		this->morningStar->attactTime = attactTime;
+		this->morningStar->SetPosition(x, y);
 	}
 		 
 }

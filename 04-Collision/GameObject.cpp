@@ -133,7 +133,7 @@ void CGameObject::RenderBoundingBox(float &x_cam, float &y_cam)
 	rect.right = (int)r - (int)l;
 	rect.bottom = (int)b - (int)t;
 
-	CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 128);
+	CGame::GetInstance()->Draw(x - x_cam, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 128);
 }
 
 void CGameObject::AddAnimation(int aniId)

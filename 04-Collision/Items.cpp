@@ -28,7 +28,7 @@ void CItems::Render(float& x_cam, float& y_cam)
 	if(isActive)
 		animations[ani]->Render(x - x_cam, y - y_cam);
 
-	RenderBoundingBox(x, y);
+	RenderBoundingBox(x_cam, y_cam);
 }
 
 void CItems::GetBoundingBox(float& l, float& t, float& r, float& b)
