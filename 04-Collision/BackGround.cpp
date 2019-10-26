@@ -13,12 +13,3 @@ void CBackGround::GetBoundingBox(float &l, float &t, float &r, float &b)
 	r = x + BG_BBOX_WIDTH;
 	b = y + BG_BBOX_HEIGHT;
 }
-
-BackGround::BackGround()
-{
-}
-
-
-BackGround::~BackGround()
-{
-}

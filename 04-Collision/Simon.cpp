@@ -2,6 +2,17 @@
 #include "debug.h"
 #include "Simon.h"
 #include "Game.h"
+#include "Fire.h"
+
+CSimon::CSimon(CMorningstar* morningStar)
+{
+	this->morningStar = morningStar;
+	isAttact = 0;
+	isJump = true;
+	coType = SIMON_TYPE;
+	listCollisionType.push_back(BRICK_TYPE);
+	//listCollisionType.push_back(FIRE_TYPE);
+}
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -9,25 +20,28 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	// Simple fall down
+	//DebugOut(L"dt simon: %f\n", dt);
 	vy += SIMON_GRAVITY * dt;
+
+	if (this->y < 121)
+		isJump = true;
+	else
+		isJump = false;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
 
-	// turn off collision when die 
-	if (state != SIMON_STATE_DIE)
-		CalcPotentialCollisions(coObjects, coEvents);
 	// reset attact timer 
-
-	if ( GetTickCount() - attactTime > ATTACT_FRAME_LASTED * 3)	{
+	if (GetTickCount() - attactTime > ATTACT_FRAME_LASTED * 3) {
 		attactTime = 0;
 		isAttact = 0;
 	}
 
-	if (vy > 0)
-		setJump(true);
-
+	// turn off collision when die 
+	if (state != SIMON_STATE_DIE)
+		CalcPotentialCollisions(coObjects, coEvents);
+	
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -81,18 +95,24 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 		}*/
+
+
+		//collision logic with fire
+		for (UINT i = 0; i < coEventsResult.size(); i++){
+			LPCOLLISIONEVENT e = coEventsResult[i];
+			if (dynamic_cast<CFire*>(e->obj))
+			{
+				CFire* fire = dynamic_cast<CFire*>(e->obj);
+				fire->SetState(STATE_DIE);
+			}
+		}
+
 	}
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) {
 		delete coEvents[i];
-	}
-
-	//770 la kich thuoc  map, den 730 phai dung lai
-	if (vx > 0 && x > 730)
-		x = 730;
-	if (vx < 0 && x < 0) x = 0;
-	
+	}	
 }
 
 void CSimon::Render(float &x_cam, float &y_cam)
@@ -107,6 +127,7 @@ void CSimon::Render(float &x_cam, float &y_cam)
 			(vx > 0) ? ani = SIMON_AN_WALKING_RIGHT : ani = SIMON_ANI_WALKING_LEFT;
 		
 		if (vy < 0) {//jump
+			
 			(nx > 0) ? ani = SIMON_ANI_SIT_LEFT : ani = SIMON_ANI_SIT_RIGHT;
 		}
 		
@@ -117,9 +138,12 @@ void CSimon::Render(float &x_cam, float &y_cam)
 			dx = 0;			//don't jump
 			vx = 0;			//don't moving
 			(nx > 0) ? ani = SIMON_ANI_ATTACT_RIGHT : ani = SIMON_ANI_ATTACT_LEFT;
-			DebugOut(L"[INFO] frame: %d\n", animations[ani]->getCurrentFrame());
 			morningStar->setAttact(nx);
-			morningStar->Render(x_cam, y_cam, animations[ani]->getCurrentFrame());
+			/*if (animations[ani]->getCurrentFrame() == 2) {
+				DebugOut(L"Last fram: %d\n", animations[ani]->getLastFrame());
+				DebugOut(L"current fram: %d\n", animations[ani]->getCurrentFrame());
+			}*/
+			morningStar->Render(x_cam, y_cam, animations[ani]->getCurrentFrame(), animations[ani]->getLastFrame());
 		}
 			
 		
@@ -128,10 +152,10 @@ void CSimon::Render(float &x_cam, float &y_cam)
 	//return mau binh thuong sau thoi gian khong va cham 
 	int alpha = 255;
 	//if (untouchable) alpha = 128;
+
+	animations[ani]->Render(x-x_cam, y-y_cam, alpha);
 	float x_temp = x - x_cam;
 	float y_temp = y - y_cam;
-	animations[ani]->Render(x-x_cam, y-y_cam, alpha);
-	
 	RenderBoundingBox(x_temp,y_temp);
 }
 
@@ -154,10 +178,9 @@ void CSimon::SetState(int state)
 			}
 			break;
 		case SIMON_STATE_JUMP:
-			if (isJump) {
+			if (y > 110) {
 				vx = 0;
 				vy = -SIMON_JUMP_SPEED_Y;
-				isJump = false;
 			}
 			break;
 		case SIMON_STATE_IDLE:

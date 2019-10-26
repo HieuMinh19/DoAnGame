@@ -13,15 +13,17 @@
 #include "Fire.h"
 #include "BackGround.h"
 #include "MorningStar.h"
+#include "Items.h"
 #include "Global.h"
+
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"04 - Collision"
 
-#define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
+#define BACKGROUND_COLOR D3DCOLOR_XRGB(0, 0, 0)
 
 #define MAX_FRAME_RATE	120
-#define Y_SOILD			150			//y position of enemy in the ground
+#define Y_SOILD			145			//y position of enemy in the ground
 
 #define ID_TEX_SIMON		100
 #define ID_TEX_ENEMY		200
@@ -29,6 +31,8 @@
 #define ID_TEX_BACKGROUND	400
 #define ID_TEX_FIRE			500
 #define ID_TEX_WEAPON		600
+#define ID_TEX_HEATH_ITEM	800
+#define ID_TEX_STAR_ITEM	803
 
 #define SIMON_ANI_IDLE_RIGHT	400
 #define SIMON_ANI_IDLE_LEFT		401 
@@ -47,6 +51,8 @@ CSimon *simon;
 CBackGround *background;
 CFire *fire;
 CMorningstar *weapon;
+CItems* items;
+
 
 vector<LPGAMEOBJECT> objects;
 
@@ -90,10 +96,12 @@ void CSampleKeyHander::KeyState(BYTE *states)
 {
 	// disable control key when Mario die 
 	if (simon->GetState() == SIMON_STATE_DIE) return;
-	if (game->IsKeyDown(DIK_RIGHT)) 
-		simon->SetState(SIMON_STATE_WALKING_RIGHT);		
-	else if (game->IsKeyDown(DIK_LEFT))
+	if (game->IsKeyDown(DIK_RIGHT)) {
+		simon->SetState(SIMON_STATE_WALKING_RIGHT);
+	}
+	else if (game->IsKeyDown(DIK_LEFT)) {
 		simon->SetState(SIMON_STATE_WALKING_LEFT);
+	}
 	else
 		simon->SetState(SIMON_STATE_IDLE);
 	if(game->IsKeyDown(DIK_DOWN))
@@ -128,6 +136,8 @@ void LoadResources()
 	textures->Add(ID_TEX_FIRE, L"textures\\fire.png", D3DCOLOR_XRGB(255, 0, 255));
 	//sprite bi dao nguoc -> can lay right_bottom top_left
 	textures->Add(ID_TEX_WEAPON, L"textures\\Resources\\morningstar.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_HEATH_ITEM, L"textures\\Resources\\item\\0.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_STAR_ITEM, L"textures\\Resources\\item\\3.2.png", D3DCOLOR_XRGB(255, 0, 255));
 
 	CSprites * sprites = CSprites::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
@@ -148,6 +158,11 @@ void LoadResources()
 	sprites->Add(30001, 5, 14, 21, 29, texEnemy);
 	sprites->Add(30002, 25, 14, 41, 29, texEnemy);
 	sprites->Add(30003, 45, 21, 61, 29, texEnemy); // die sprite
+
+	LPDIRECT3DTEXTURE9 texHeathItem = textures->Get(ID_TEX_HEATH_ITEM);
+	sprites->Add(70000, 1, 1, 15, 15, texHeathItem);
+	LPDIRECT3DTEXTURE9 texStarItem = textures->Get(ID_TEX_STAR_ITEM);
+	sprites->Add(80003, 0, 0, 16, 16, texStarItem);
 
 	LPANIMATION ani;	
 
@@ -194,6 +209,9 @@ void LoadResources()
 	ani = new CAnimation(FRAME_LASTED);		// brick
 	ani->Add(20001);
 	animations->Add(601, ani);
+	ani = new CAnimation(FRAME_LASTED);		// brick
+	ani->Add(20001);
+	animations->Add(602, ani);
 
 	//add weapon enemy
 	LPDIRECT3DTEXTURE9 texWeapon = textures->Get(ID_TEX_WEAPON);
@@ -334,6 +352,8 @@ void LoadResources()
 	simon->AddAnimation(SIMON_ANI_DOWN_LEFT);
 	simon->AddAnimation(SIMON_ANI_ATTACT_LEFT);
 	simon->AddAnimation(SIMON_ANI_ATTACT_RIGHT);
+
+	simon->SetPosition(2.0f, 0.0f);
 	
 	// background
 	LPDIRECT3DTEXTURE9 texBG = textures->Get(ID_TEX_BACKGROUND);
@@ -345,28 +365,64 @@ void LoadResources()
 	background->AddAnimation(701);
 	objects.push_back(background);
 
+	ani = new CAnimation(FRAME_LASTED);
+	ani->Add(70000);
+	animations->Add(7000, ani);
+
+
+	ani = new CAnimation(FRAME_LASTED);
+	ani->Add(80003);
+	animations->Add(8003, ani);
+
+	items = new CItems();
+	items->AddAnimation(7000);
+	items->SetPosition(0.0f, Y_SOILD - 25);
+	
+	items->AddAnimation(8003);
+	items->SetPosition(0.0f, Y_SOILD - 25);
+	
+	objects.push_back(items);
+
 	//add fire enemy
 	LPDIRECT3DTEXTURE9 texFire = textures->Get(ID_TEX_FIRE);
-	sprites->Add(4001, 0, 0, 32, 63, texFire);
-	sprites->Add(4002, 32, 0, 63, 63, texFire);
-	fire = new CFire();
+	sprites->Add(4001, 0, 0, 16, 31, texFire);
+	sprites->Add(4002, 16, 0, 31, 31, texFire);
+	fire = new CFire(items);
 	ani = new CAnimation(200);
 	ani->Add(4001);
 	ani->Add(4002);
 	animations->Add(40, ani);
 	fire->AddAnimation(40);
-	fire->SetPosition(20.0f, Y_SOILD-60);
+	fire->SetPosition(70.0f, Y_SOILD-30);
 	objects.push_back(fire);
 
 	objects.push_back(simon);
 
-
 	//khoi tao hang gach ngang
-	for (int i = 0; i < 50; i++)
+	for (UINT i = 0; i < 50; i++)
 	{
 		CBrick *brick = new CBrick();
 		brick->AddAnimation(601);
 		brick->SetPosition(0 + i * 16.0f, Y_SOILD);
+		
+		objects.push_back(brick);
+	}
+
+	for(UINT i = 1; i < 10; i++)
+	{
+		//wall left
+		CBrick* brick = new CBrick();
+		brick->AddAnimation(601);
+		//brick->x -= 15;
+		brick->SetPosition(-BRICK_BBOX_WIDTH + 1.0f, Y_SOILD - 10 * i);		
+		objects.push_back(brick);
+	}
+	
+	for (UINT i = 1; i < 10; i++) {
+		//wall right
+		CBrick* brick = new CBrick();
+		brick->AddAnimation(601);
+		brick->SetPosition(750.0f, Y_SOILD - 10 * i);
 		objects.push_back(brick);
 	}
 	
@@ -388,6 +444,8 @@ void Update(DWORD dt)
 
 	for (int i = 0; i < objects.size(); i++)
 	{
+		if (objects[i]->GetState() == STATE_DIE && objects[i])
+			objects[i]->x = -1000;
 		objects[i]->Update(dt,&coObjects);
 	}
 }

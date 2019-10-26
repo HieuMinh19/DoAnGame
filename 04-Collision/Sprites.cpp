@@ -55,11 +55,13 @@ void CAnimation::Render(float x, float y, int alpha)
 	if (currentFrame == -1) 
 	{
 		currentFrame = 0; 
+		lastFrame = 0;
 		lastFrameTime = now;
 	}
 	else
 	{
 		DWORD t = frames[currentFrame]->GetTime();
+		lastFrame = currentFrame;
 		if (now - lastFrameTime > t)
 		{
 			currentFrame++;

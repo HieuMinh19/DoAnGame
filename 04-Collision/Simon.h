@@ -2,15 +2,14 @@
 #include "GameObject.h"
 #include "Global.h"
 #include "MorningStar.h"
+#include "Brick.h"
 
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 220
 
 #define SIMON_WALKING_SPEED		0.1f 
 //0.1f
-#define SIMON_JUMP_SPEED_Y		0.5f
+#define SIMON_JUMP_SPEED_Y		0.2f
 #define SIMON_JUMP_DEFLECT_SPEED 0.2f
-#define SIMON_GRAVITY			0.002f
+#define SIMON_GRAVITY			0.0005f
 #define SIMON_DIE_DEFLECT_SPEED	 0.5f
 
 #define SIMON_STATE_IDLE			0
@@ -32,27 +31,23 @@
 #define SIMON_ANI_ATTACT_RIGHT			7
 #define SIMON_ANI_DIE					8
 
-#define SIMON_BBOX_WIDTH  15
-#define SIMON_BBOX_HEIGHT 27
-#define SIMON_SIT_BBOX_HEIGHT  22
+#define SIMON_BBOX_WIDTH		15
+#define SIMON_BBOX_HEIGHT		32
+#define SIMON_SIT_BBOX_HEIGHT	22
 
 #define SIMON_UNTOUCHABLE_TIME 5000
 #define SIMON_ATTACT_TIME	1000
 
 class CSimon : public CGameObject
 {
-	bool isJump;
+	
 	DWORD attactTime;
 	CMorningstar* morningStar;
 
-public: 
+public:
+	bool isJump;
 	int isAttact;
-	CSimon(CMorningstar* morningStar) : CGameObject()
-	{
-		this->morningStar = morningStar;
-		isAttact = 0;
-		isJump = true;
-	}
+	CSimon(CMorningstar* morningStar);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render(float &x_cam, float &y_cam);
 	void SetState(int state);
