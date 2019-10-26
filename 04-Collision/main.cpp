@@ -80,7 +80,6 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 		break;
 	case DIK_X:
 		simon->StartAttact();
-		simon->getMorningStar()->SetPosition(simon->x, simon->y);
 		weapon->setAttact(simon->nx);
 		break;
 	}
@@ -339,7 +338,7 @@ void LoadResources()
 	animations->Add(6023, ani);
 	weapon->AddAnimation(6023);
 
-	weapon->SetPosition(70.0f, Y_SOILD - 60);
+	//weapon->SetPosition(70.0f, Y_SOILD - 60);
 	objects.push_back(weapon);
 
 
@@ -393,7 +392,7 @@ void LoadResources()
 	ani->Add(4002);
 	animations->Add(40, ani);
 	fire->AddAnimation(40);
-	fire->SetPosition(70.0f, Y_SOILD-30);
+	fire->SetPosition(400.0f, Y_SOILD-30);
 	objects.push_back(fire);
 
 	objects.push_back(simon);

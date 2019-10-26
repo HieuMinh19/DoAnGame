@@ -50,10 +50,11 @@ class CMorningstar : public CGameObject
 	return 0 =>		don't attact
 	*/
 	int isActiveLeft;
-	DWORD attactTime;
+	
 	bool isLastFram;
 	
 public:
+	DWORD attactTime;
 	int getLevel() { return this->level; }
 	int getAttact() { return this->isActiveLeft; }
 	void setAttact(int status) { this->isActiveLeft = status; }

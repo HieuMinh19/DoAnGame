@@ -4,7 +4,7 @@
 #include "debug.h"
 
 #define FIRE_BBOX_WIDTH  16
-#define FIRE_BBOX_HEIGHT 16
+#define FIRE_BBOX_HEIGHT 31
 #define FIRE_GRAVITY	0.02f
 
 #define FIRE_BBOX_HEIGHT_DIE 9
