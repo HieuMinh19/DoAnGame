@@ -11,7 +11,7 @@ CSimon::CSimon(CMorningstar* morningStar)
 	isJump = true;
 	coType = SIMON_TYPE;
 	listCollisionType.push_back(BRICK_TYPE);
-	//listCollisionType.push_back(FIRE_TYPE);
+	listCollisionType.push_back(ITEM_TYPE);
 }
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -95,14 +95,17 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}*/
 
-
-		//collision logic with fire
-		for (UINT i = 0; i < coEventsResult.size(); i++){
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			if (dynamic_cast<CFire*>(e->obj))
-			{
-				CFire* fire = dynamic_cast<CFire*>(e->obj);
-				fire->SetState(STATE_DIE);
+
+			if (dynamic_cast<CItems*>(e->obj)){
+				CItems* item = dynamic_cast<CItems*>(e->obj);
+				if (item->getItemType() == STAR_ITEM_TYPE && this->morningStar->getLevel() < 3) {
+					int nextMorningStarLevel = this->morningStar->getLevel() + 1;
+					this->morningStar->setLevel(nextMorningStarLevel);
+				}
+				item->SetState(STATE_DIE);
 			}
 		}
 
@@ -139,9 +142,7 @@ void CSimon::Render(float &x_cam, float &y_cam)
 			vx = 0;			//don't moving
 			ani = (nx > 0) ? SIMON_ANI_ATTACT_RIGHT : SIMON_ANI_ATTACT_LEFT;
 			
-		}
-			
-		
+		}		
 	}
 	//mau bouding box
 	animations[ani]->Render(x - x_cam, y - y_cam, 255);

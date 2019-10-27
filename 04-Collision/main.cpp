@@ -17,8 +17,8 @@
 #include "Global.h"
 
 
-#define WINDOW_CLASS_NAME L"SampleWindow"
-#define MAIN_WINDOW_TITLE L"04 - Collision"
+#define WINDOW_CLASS_NAME L"GameWindow"
+#define MAIN_WINDOW_TITLE L"Castlevania - HieuLe"
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(0, 0, 0)
 
@@ -133,7 +133,6 @@ void LoadResources()
 	textures->Add(ID_TEX_BACKGROUND, L"textures\\Level_1_Entrance.png", D3DCOLOR_XRGB(0, 128, 128));
 	textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(0, 0, 0));
 	textures->Add(ID_TEX_FIRE, L"textures\\fire.png", D3DCOLOR_XRGB(255, 0, 255));
-	//sprite bi dao nguoc -> can lay right_bottom top_left
 	textures->Add(ID_TEX_WEAPON, L"textures\\Resources\\morningstar.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_HEATH_ITEM, L"textures\\Resources\\item\\0.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_STAR_ITEM, L"textures\\Resources\\item\\3.2.png", D3DCOLOR_XRGB(255, 0, 255));
@@ -392,7 +391,7 @@ void LoadResources()
 	ani->Add(4002);
 	animations->Add(40, ani);
 	fire->AddAnimation(40);
-	fire->SetPosition(400.0f, Y_SOILD-30);
+	fire->SetPosition(70.0f, Y_SOILD-30);
 	objects.push_back(fire);
 
 	objects.push_back(simon);
