@@ -4,7 +4,8 @@ CItems::CItems()
 {
 	//random items
 	srand((unsigned)time(0));
-	itemType = rand() % 2 + 1;
+	itemType = rand() % (23 - 20 + 1) + 20;
+	DebugOut(L"type: %d\n", itemType);
 
 	coType = ITEM_TYPE;
 	isActive = false;
@@ -17,11 +18,18 @@ void CItems::Render(float& x_cam, float& y_cam)
 	int ani;
 	switch (itemType)
 	{
-	case 2:
+	case 20:
+	case 21:
 		ani = HEALTH_ANI_ITEM;
+		itemType = HEALTH_ITEM_TYPE;
 		break;
-	case 1:
+	case 22:
+	case 23:
 		ani = STAR_ANI_ITEM;
+		itemType = STAR_ITEM_TYPE;
+		break;
+	default:
+		ani = HEALTH_ANI_ITEM;
 		break;
 	}
 	
@@ -35,8 +43,8 @@ void CItems::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	l = x;
 	t = y;
-	r = x + HEATH_BBOX_WIDTH;
-	b = y + HEATH_BBOX_HEIGHT;
+	r = x + HEALTH_BBOX_WIDTH;
+	b = y + HEALTH_BBOX_HEIGHT;
 }
 
 void CItems::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -47,8 +55,7 @@ void CItems::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
-	
-	int i = 0;
+
 	if (isActive) {
 		CalcPotentialCollisions(coObjects, coEvents);
 	}
@@ -75,6 +82,9 @@ void CItems::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++) {
 		delete coEvents[i];
 	}
+
+	if (this->state == STATE_DIE)
+		x -= 1000;
 
 }
 

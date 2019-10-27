@@ -40,7 +40,6 @@
 
 class CSimon : public CGameObject
 {
-	
 	DWORD attactTime;
 	CMorningstar* morningStar;
 
