@@ -28,4 +28,3 @@ public:
 	void setActive(bool active) { this->isActive = active; };
 	int getItemType() { return this->itemType; }
 };
-

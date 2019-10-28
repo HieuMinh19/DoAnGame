@@ -47,16 +47,10 @@ void CFire::SetState(int state)
 void CFire::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt, coObjects);
-	//DebugOut(L"x: %f\n", x);
 	float yItem = y - 12;
 	if (state == STATE_DIE) {	
-		//DebugOut(L"xItem: %f\n", xItem);
 		this->item->setActive(true);
-		//this->item->Render(x, yItem);
-		//item->SetSpeed(0, 0);
-
+		this->item->canUpdate = true;
 		x -= 1000;
-		//DebugOut(L"x x: %f\n", x);
-		//this->item->Render(x, y);
 	}
 }

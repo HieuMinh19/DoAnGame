@@ -101,11 +101,14 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 			if (dynamic_cast<CItems*>(e->obj)){
 				CItems* item = dynamic_cast<CItems*>(e->obj);
+				
 				if (item->getItemType() == STAR_ITEM_TYPE && this->morningStar->getLevel() < 3) {
 					int nextMorningStarLevel = this->morningStar->getLevel() + 1;
 					this->morningStar->setLevel(nextMorningStarLevel);
 				}
 				item->SetState(STATE_DIE);
+			
+				
 			}
 		}
 
