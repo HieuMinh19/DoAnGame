@@ -72,11 +72,13 @@ void CMorningstar::Render(float& x_cam, float& y_cam, int curentFrame, int lastF
 				else {
 					if (level == 1) {
 						if (lastFram == curentFrame - 1) {
-							x += 10;
+							//x += 10;
+							//y += 10;
+							x -= 25;
 							y += 10;
 						}
 						this->isLastFram = true;
-						animations[WEAPON_ANI_ATTACT_LEFT3_LV1]->Render(x - x_cam, y - y_cam);
+						animations[WEAPON_ANI_ATTACT_LEFT3_LV1]->Render(x - x_cam + 35, y - y_cam + 10);
 					}
 					else {
 						if (level == 2) {
@@ -112,7 +114,7 @@ void CMorningstar::Render(float& x_cam, float& y_cam, int curentFrame, int lastF
 			else
 				if(curentFrame == 1){
 					if (level == 1)
-						animations[WEAPON_ANI_ATTACT_RIGHT2_LV1]->Render(x - x_cam + 20, y - y_cam + 5);
+						animations[WEAPON_ANI_ATTACT_RIGHT2_LV1]->Render(x - x_cam + 20, y - y_cam + 15);
 					else
 						if (level == 2)
 							animations[WEAPON_ANI_ATTACT_RIGHT2_LV2]->Render(x - x_cam, y - y_cam - 10);
@@ -122,10 +124,10 @@ void CMorningstar::Render(float& x_cam, float& y_cam, int curentFrame, int lastF
 				else {
 					if (level == 1) {
 						if (lastFram == curentFrame - 1) {
-							x += 50;
-							y += 15;
+							x += 25;
+							y += 5;
 						}
-						animations[WEAPON_ANI_ATTACT_RIGHT3_LV1]->Render(x - x_cam, y - y_cam);
+						animations[WEAPON_ANI_ATTACT_RIGHT3_LV1]->Render(x - x_cam + 25, y - y_cam + 15);
 						this->isLastFram = true;	
 					}
 					else
