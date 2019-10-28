@@ -444,7 +444,8 @@ void Update(DWORD dt)
 	{
 		if (objects[i]->GetState() == STATE_DIE && objects[i])
 			objects[i]->x = -1000;
-		objects[i]->Update(dt,&coObjects);
+		if(objects[i]->canUpdate)
+			objects[i]->Update(dt,&coObjects);
 	}
 }
 

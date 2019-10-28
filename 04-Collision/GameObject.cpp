@@ -70,7 +70,7 @@ void CGameObject::CalcPotentialCollisions(
 
 		if (e->t > 0 && e->t <= 1.0f) {
 			for (int j = 0; j < listCollisionType.size(); j++) {
-				if (listCollisionType[j] == coObjects->at(i)->GetType()) {
+				if (listCollisionType[j] == coObjects->at(i)->GetType() && coObjects->at(i)->canUpdate) {
 					coEvents.push_back(e);
 					break;
 				}

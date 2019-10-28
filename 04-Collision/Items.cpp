@@ -11,6 +11,7 @@ CItems::CItems()
 	isActive = false;
 	vy = ITEM_GRAVITY;
 	listCollisionType.push_back(BRICK_TYPE);
+	canUpdate = false;
 }
 
 void CItems::Render(float& x_cam, float& y_cam)
@@ -70,7 +71,7 @@ void CItems::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float min_tx, min_ty, nx = 0, ny;
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 		// block 
-		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bi t to avoid overlapping next frame
+		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
 		y += min_ty * dy + ny * 0.4f;
 
 		if (nx != 0) vx = 0;

@@ -20,8 +20,8 @@ typedef CCollisionEvent * LPCOLLISIONEVENT;
 struct CCollisionEvent
 {
 	LPGAMEOBJECT obj;
-	float t, nx, ny;
-	
+	float t, nx, ny;	
+
 	CCollisionEvent(float t, float nx, float ny, LPGAMEOBJECT obj = NULL) { this->t = t; this->nx = nx; this->ny = ny; this->obj = obj; }
 
 	static bool compare(const LPCOLLISIONEVENT &a, LPCOLLISIONEVENT &b)
@@ -52,7 +52,7 @@ public:
 	//type to filterCollision
 	int coType;
 	vector<int> listCollisionType;
-
+	bool canUpdate = true;
 	DWORD dt; 
 
 	vector<LPANIMATION> animations;
