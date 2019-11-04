@@ -50,15 +50,13 @@ class CSimon : public CGameObject
 	CItems* subWeapon;
 public:
 	int isAttact;
-	bool activeSubWeapon;
-
 	CSimon(CMorningstar* morningStar);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render(float &x_cam, float &y_cam);
 	void SetState(int state);
 	void StartAttact();
 	CMorningstar* getMorningStar() { return this->morningStar; }
-
-
+	void SetSubWeapon(CItems* subWeapon) { this->subWeapon = subWeapon; }
+	
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 };

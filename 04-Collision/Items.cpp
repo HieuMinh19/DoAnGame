@@ -4,7 +4,7 @@ CItems::CItems()
 {
 	//random items
 	srand((unsigned)time(0));
-	itemType = rand() % (23 - 20 + 1) + 20;
+	itemType = rand() % (5) + 20;
 
 	coType = ITEM_TYPE;
 	isActive = false;
@@ -18,7 +18,7 @@ CItems::CItems(float x, float y, int type)
 {
 	this->x = x;
 	this->y = y;
-	this->itemType = 24;
+	this->itemType = type;
 
 	coType = ITEM_TYPE;
 	isActive = false;
@@ -89,8 +89,6 @@ void CItems::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		this->isActive = false;
 	}
 		
-	DebugOut(L"time Live: %d\n", timeLive);
-
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0){
 		x += dx;

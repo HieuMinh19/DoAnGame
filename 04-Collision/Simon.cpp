@@ -11,8 +11,7 @@ CSimon::CSimon(CMorningstar* morningStar)
 	coType = SIMON_TYPE;
 	listCollisionType.push_back(BRICK_TYPE);
 	listCollisionType.push_back(ITEM_TYPE);
-	
-	subWeapon = 0;
+
 }
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -103,8 +102,12 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					this->morningStar->setLevel(nextMorningStarLevel);
 				}
 				else {
-					if (item->getItemType() == DARTS_ITEM_TYPE)
+					if (item->getItemType() == DARTS_ITEM_TYPE) {
+						CItems* subWeapon = new CItems(this->x, this->y, DARTS_ITEM_TYPE);
+						SetSubWeapon(subWeapon);
 						this->subWeapon->itemType = DARTS_SUB_WEAPON;
+					}
+						
 				}
 				item->SetState(STATE_DIE);
 			}
@@ -141,13 +144,15 @@ void CSimon::Render(float &x_cam, float &y_cam)
 			dx = 0;			//don't jump
 			vx = 0;			//don't moving
 				//int ani = (nx > 0) ? SIMON_ANI_SIT_ATTACT_RIGHT : SIMON_ANI_SIT_ATTACT_LEFT;
-	
 			ani = (nx > 0) ? SIMON_ANI_ATTACT_RIGHT : SIMON_ANI_ATTACT_LEFT;
 			
 			if (this->state != SIMON_STATE_ATTACT_SUBWEAPON) {
-				
 				morningStar->setAttact(nx);
 				morningStar->Render(x_cam, y_cam, animations[ani]->getCurrentFrame(), animations[ani]->getLastFrame());
+			}
+			else {
+				this->subWeapon->nx = this->nx;
+				this->subWeapon->Render(x_cam, y_cam);
 			}
 		}		
 	}
@@ -214,6 +219,13 @@ void CSimon::StartAttact()
 			animations[ani]->currentFrame = -1;
 			this->morningStar->attactTime = attactTime;
 			this->morningStar->SetPosition(x, y);
+		}
+		else {
+			CItems* subWeapon = new CItems(this->x, this->y, DARTS_ITEM_TYPE);
+			SetSubWeapon(subWeapon);
+			this->subWeapon->isActive = true;
+			this->subWeapon->timeLive = GetTickCount();		//make item don't die
+			this->subWeapon->SetPosition(x, y);
 		}
 		
 	}

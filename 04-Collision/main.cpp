@@ -81,7 +81,6 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 	case DIK_X:
 		if (game->IsKeyDown(DIK_UP)) {
 			simon->SetState(SIMON_STATE_ATTACT_SUBWEAPON);
-			DebugOut(L"simon state: %d\n", simon->GetState());
 		}
 		else {
 			weapon->setAttact(simon->nx);
@@ -138,7 +137,7 @@ void LoadResources()
 
 	textures->Add(ID_TEX_SIMON, L"textures\\not_weapons.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_BACKGROUND, L"textures\\Level_1_Entrance.png", D3DCOLOR_XRGB(0, 128, 128));
-	textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(0, 0, 0));
+	//textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(0, 0, 0));
 	textures->Add(ID_TEX_FIRE, L"textures\\fire.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_WEAPON, L"textures\\Resources\\morningstar.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_HEATH_ITEM, L"textures\\Resources\\item\\0.png", D3DCOLOR_XRGB(255, 0, 255));
@@ -236,7 +235,7 @@ void LoadResources()
 	//add weapon enemy
 	LPDIRECT3DTEXTURE9 texWeapon = textures->Get(ID_TEX_WEAPON);
 	sprites->Add(60000, 63, 5, 80, 35, texWeapon);
-	sprites->Add(60004, 505, 30, 480, 5, texWeapon);
+	sprites->Add(60004, 480, 5, 505, 30, texWeapon);
 	sprites->Add(60002, 205, 20, 175, 5, texWeapon);
 
 	//attact right
@@ -269,9 +268,9 @@ void LoadResources()
 	weapon->AddAnimation(6000);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60004);
-	animations->Add(6004, ani);
-	weapon->AddAnimation(6004);
+	ani->Add(60001);
+	animations->Add(6001, ani);
+	weapon->AddAnimation(6001);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60002);
@@ -286,9 +285,9 @@ void LoadResources()
 	weapon->AddAnimation(6005);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60001);
-	animations->Add(6001, ani);
-	weapon->AddAnimation(6001);
+	ani->Add(60004);
+	animations->Add(6004, ani);
+	weapon->AddAnimation(6004);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60003);
@@ -302,9 +301,9 @@ void LoadResources()
 	weapon->AddAnimation(6010);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60014);
-	animations->Add(6014, ani);
-	weapon->AddAnimation(6014);
+	ani->Add(60011);
+	animations->Add(6011, ani);
+	weapon->AddAnimation(6011);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60012);
@@ -318,9 +317,9 @@ void LoadResources()
 	weapon->AddAnimation(6015);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60011);
-	animations->Add(6011, ani);
-	weapon->AddAnimation(6011);
+	ani->Add(60014);
+	animations->Add(6014, ani);
+	weapon->AddAnimation(6014);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60013);
@@ -334,9 +333,9 @@ void LoadResources()
 	weapon->AddAnimation(6020);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60024);
-	animations->Add(6024, ani);
-	weapon->AddAnimation(6024);
+	ani->Add(60021);
+	animations->Add(6021, ani);
+	weapon->AddAnimation(6021);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60022);
@@ -349,9 +348,9 @@ void LoadResources()
 	weapon->AddAnimation(6015);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60021);
-	animations->Add(6021, ani);
-	weapon->AddAnimation(6021);
+	ani->Add(60024);
+	animations->Add(6024, ani);
+	weapon->AddAnimation(6024);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60023);
@@ -421,9 +420,8 @@ void LoadResources()
 
 	for (UINT i = 0; i < 4; i++) {
 		//random items type
-		int itemType = rand() % (4) + 20;
-		DebugOut(L"item Type: %d\n", itemType);
-
+		int itemType = rand() % (5) + 20;
+	
 		CItems* items = new CItems(70.0f + 150 * i, Y_SOILD - 30, itemType);
 		items->AddAnimation(7000);
 		items->AddAnimation(8003);
