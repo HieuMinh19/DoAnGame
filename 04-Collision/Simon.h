@@ -3,6 +3,7 @@
 #include "Global.h"
 #include "MorningStar.h"
 #include "Brick.h"
+#include "Items.h"
 
 
 #define SIMON_WALKING_SPEED		0.1f 
@@ -19,6 +20,8 @@
 #define SIMON_STATE_DIE				400
 #define SIMON_STATE_ATTACT			500
 #define SIMON_STATE_SITDOWN			600
+#define SIMON_STATE_SIT_ATTACT		700
+#define SIMON_STATE_ATTACT_SUBWEAPON		800
 
 //define index of animation
 #define SIMON_ANI_IDLE_RIGHT			0
@@ -29,31 +32,31 @@
 #define SIMON_ANI_SIT_RIGHT				5
 #define SIMON_ANI_ATTACT_LEFT			6
 #define SIMON_ANI_ATTACT_RIGHT			7
-#define SIMON_ANI_DIE					8
+#define SIMON_ANI_SIT_ATTACT_LEFT		8
+#define SIMON_ANI_SIT_ATTACT_RIGHT		9
+#define SIMON_ANI_DIE					10
 
 #define SIMON_BBOX_WIDTH		15
 #define SIMON_BBOX_HEIGHT		32
 #define SIMON_SIT_BBOX_HEIGHT	22
 
-#define SIMON_UNTOUCHABLE_TIME 5000
-#define SIMON_ATTACT_TIME	1000
+#define DARTS_SUB_WEAPON		1004
 
 class CSimon : public CGameObject
 {
 	DWORD attactTime;
-	CMorningstar* morningStar;
-
+	CMorningstar* morningStar;	
+	int subWeaponType;
+	CItems* subWeapon;
 public:
-	bool isJump;
 	int isAttact;
+	bool activeSubWeapon;
+
 	CSimon(CMorningstar* morningStar);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render(float &x_cam, float &y_cam);
 	void SetState(int state);
-	
 	void StartAttact();
-	void setJump(bool jump) { this->isJump = jump; }
-	bool getJump() { return this->isJump; }
 	CMorningstar* getMorningStar() { return this->morningStar; }
 
 

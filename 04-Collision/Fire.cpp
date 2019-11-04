@@ -51,6 +51,7 @@ void CFire::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state == STATE_DIE) {	
 		this->item->setActive(true);
 		this->item->canUpdate = true;
+		this->canUpdate = false;
 		x -= 1000;
 	}
 }
