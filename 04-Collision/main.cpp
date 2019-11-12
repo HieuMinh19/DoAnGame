@@ -15,7 +15,7 @@
 #include "MorningStar.h"
 #include "Items.h"
 #include "Global.h"
-
+#include "CSubWeapon.h"
 
 #define WINDOW_CLASS_NAME L"GameWindow"
 #define MAIN_WINDOW_TITLE L"Castlevania - HieuLe"
@@ -33,6 +33,8 @@
 #define ID_TEX_WEAPON		600
 #define ID_TEX_HEATH_ITEM	800
 #define ID_TEX_STAR_ITEM	803
+#define ID_TEX_DARTS_ITEM	804
+#define ID_TEX_DARTS_ITEM_L 8041
 
 #define SIMON_ANI_IDLE_RIGHT	400
 #define SIMON_ANI_IDLE_LEFT		401 
@@ -40,19 +42,19 @@
 #define SIMON_ANI_WALK_RIGHT	500  
 #define SIMON_ANI_DOWN_RIGHT	402
 #define SIMON_ANI_DOWN_LEFT		403
-#define SIMON_ANI_ATTACT_LEFT	106
-#define SIMON_ANI_ATTACT_RIGHT	107
-
+#define SIMON_ANI_ATTACT_LEFT	506
+#define SIMON_ANI_ATTACT_RIGHT	507
+#define SIMON_ANI_SIT_ATTACT_LEFT	701
+#define SIMON_ANI_SIT_ATTACT_RIGHT	702
 
 CGame *game;
 
 CSimon *simon;
 
 CBackGround *background;
-CFire *fire;
-CMorningstar *weapon;
-CItems* items;
 
+CMorningstar *weapon;
+vector<CItems> Items;
 
 vector<LPGAMEOBJECT> objects;
 
@@ -79,8 +81,14 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 		simon->SetSpeed(0, 0);
 		break;
 	case DIK_X:
+		if (game->IsKeyDown(DIK_UP)) {
+			simon->SetState(SIMON_STATE_ATTACT_SUBWEAPON);
+			simon->UsingSubWeapon(objects);
+		}
+		else {
+			weapon->setAttact(simon->nx);
+		}
 		simon->StartAttact();
-		weapon->setAttact(simon->nx);
 		break;
 	}
 	
@@ -88,7 +96,6 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 
 void CSampleKeyHander::OnKeyUp(int KeyCode)
 {
-	//DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
 }
 
 void CSampleKeyHander::KeyState(BYTE *states)
@@ -101,10 +108,12 @@ void CSampleKeyHander::KeyState(BYTE *states)
 	else if (game->IsKeyDown(DIK_LEFT)) {
 		simon->SetState(SIMON_STATE_WALKING_LEFT);
 	}
+	else if (game->IsKeyDown(DIK_DOWN))
+			simon->SetState(SIMON_STATE_SITDOWN);
 	else
-		simon->SetState(SIMON_STATE_IDLE);
-	if(game->IsKeyDown(DIK_DOWN))
-		simon->SetState(SIMON_STATE_SITDOWN);
+		if(!simon->isAttact)
+			simon->SetState(SIMON_STATE_IDLE);
+	
 }
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -131,11 +140,13 @@ void LoadResources()
 
 	textures->Add(ID_TEX_SIMON, L"textures\\not_weapons.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_BACKGROUND, L"textures\\Level_1_Entrance.png", D3DCOLOR_XRGB(0, 128, 128));
-	textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(0, 0, 0));
+	//textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(0, 0, 0));
 	textures->Add(ID_TEX_FIRE, L"textures\\fire.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_WEAPON, L"textures\\Resources\\morningstar.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_HEATH_ITEM, L"textures\\Resources\\item\\0.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_STAR_ITEM, L"textures\\Resources\\item\\3.2.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_DARTS_ITEM, L"textures\\Resources\\item\\4.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_DARTS_ITEM_L, L"textures\\Resources\\weapon\\1.png", D3DCOLOR_XRGB(255, 0, 255));
 
 	CSprites * sprites = CSprites::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
@@ -161,6 +172,11 @@ void LoadResources()
 	sprites->Add(70000, 1, 1, 15, 15, texHeathItem);
 	LPDIRECT3DTEXTURE9 texStarItem = textures->Get(ID_TEX_STAR_ITEM);
 	sprites->Add(80003, 0, 0, 16, 16, texStarItem);
+	
+	LPDIRECT3DTEXTURE9 texDartsItem = textures->Get(ID_TEX_DARTS_ITEM);
+	sprites->Add(80004, 0, 0, 16, 9, texDartsItem);
+	LPDIRECT3DTEXTURE9 texDartsItemL = textures->Get(ID_TEX_DARTS_ITEM_L);
+	sprites->Add(800041, 0, 0, 16, 9, texDartsItem);
 
 	LPANIMATION ani;	
 
@@ -204,6 +220,18 @@ void LoadResources()
 	ani->Add(500);
 	animations->Add(SIMON_ANI_DOWN_LEFT, ani);
 
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(1200);
+	ani->Add(4700);
+	ani->Add(4800);
+	animations->Add(SIMON_ANI_SIT_ATTACT_RIGHT, ani);
+
+	ani = new CAnimation(ATTACT_FRAME_LASTED);
+	ani->Add(500);
+	ani->Add(3300);
+	ani->Add(3400);
+	animations->Add(SIMON_ANI_SIT_ATTACT_LEFT, ani);
+
 	ani = new CAnimation(FRAME_LASTED);		// brick
 	ani->Add(20001);
 	animations->Add(601, ani);
@@ -214,7 +242,7 @@ void LoadResources()
 	//add weapon enemy
 	LPDIRECT3DTEXTURE9 texWeapon = textures->Get(ID_TEX_WEAPON);
 	sprites->Add(60000, 63, 5, 80, 35, texWeapon);
-	sprites->Add(60004, 505, 30, 480, 5, texWeapon);
+	sprites->Add(60004, 480, 5, 505, 30, texWeapon);
 	sprites->Add(60002, 205, 20, 175, 5, texWeapon);
 
 	//attact right
@@ -238,7 +266,6 @@ void LoadResources()
 	sprites->Add(60024, 482, 70, 503, 96, texWeapon);
 	sprites->Add(60025, 560, 73, 505, 101, texWeapon);
 
-
 	weapon = new CMorningstar();
 
 	//attact left
@@ -248,9 +275,9 @@ void LoadResources()
 	weapon->AddAnimation(6000);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60004);
-	animations->Add(6004, ani);
-	weapon->AddAnimation(6004);
+	ani->Add(60001);
+	animations->Add(6001, ani);
+	weapon->AddAnimation(6001);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60002);
@@ -265,9 +292,9 @@ void LoadResources()
 	weapon->AddAnimation(6005);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60001);
-	animations->Add(6001, ani);
-	weapon->AddAnimation(6001);
+	ani->Add(60004);
+	animations->Add(6004, ani);
+	weapon->AddAnimation(6004);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60003);
@@ -281,9 +308,9 @@ void LoadResources()
 	weapon->AddAnimation(6010);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60014);
-	animations->Add(6014, ani);
-	weapon->AddAnimation(6014);
+	ani->Add(60011);
+	animations->Add(6011, ani);
+	weapon->AddAnimation(6011);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60012);
@@ -297,9 +324,9 @@ void LoadResources()
 	weapon->AddAnimation(6015);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60011);
-	animations->Add(6011, ani);
-	weapon->AddAnimation(6011);
+	ani->Add(60014);
+	animations->Add(6014, ani);
+	weapon->AddAnimation(6014);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60013);
@@ -313,9 +340,9 @@ void LoadResources()
 	weapon->AddAnimation(6020);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60024);
-	animations->Add(6024, ani);
-	weapon->AddAnimation(6024);
+	ani->Add(60021);
+	animations->Add(6021, ani);
+	weapon->AddAnimation(6021);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60022);
@@ -328,9 +355,9 @@ void LoadResources()
 	weapon->AddAnimation(6015);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
-	ani->Add(60021);
-	animations->Add(6021, ani);
-	weapon->AddAnimation(6021);
+	ani->Add(60024);
+	animations->Add(6024, ani);
+	weapon->AddAnimation(6024);
 
 	ani = new CAnimation(ATTACT_FRAME_LASTED);
 	ani->Add(60023);
@@ -339,7 +366,6 @@ void LoadResources()
 
 	//weapon->SetPosition(70.0f, Y_SOILD - 60);
 	objects.push_back(weapon);
-
 
 	simon = new CSimon(weapon);
 	simon->AddAnimation(SIMON_ANI_IDLE_RIGHT);		         
@@ -350,8 +376,11 @@ void LoadResources()
 	simon->AddAnimation(SIMON_ANI_DOWN_LEFT);
 	simon->AddAnimation(SIMON_ANI_ATTACT_LEFT);
 	simon->AddAnimation(SIMON_ANI_ATTACT_RIGHT);
+	simon->AddAnimation(SIMON_ANI_SIT_ATTACT_LEFT);
+	simon->AddAnimation(SIMON_ANI_SIT_ATTACT_RIGHT);
 
 	simon->SetPosition(2.0f, 0.0f);
+	
 	
 	// background
 	LPDIRECT3DTEXTURE9 texBG = textures->Get(ID_TEX_BACKGROUND);
@@ -363,36 +392,44 @@ void LoadResources()
 	background->AddAnimation(701);
 	objects.push_back(background);
 
+	////items
 	ani = new CAnimation(FRAME_LASTED);
 	ani->Add(70000);
 	animations->Add(7000, ani);
-
-
 	ani = new CAnimation(FRAME_LASTED);
 	ani->Add(80003);
 	animations->Add(8003, ani);
-
-	items = new CItems();
-	items->AddAnimation(7000);
-	items->SetPosition(0.0f, Y_SOILD - 25);
-	
-	items->AddAnimation(8003);
-	items->SetPosition(0.0f, Y_SOILD - 25);
-	
-	objects.push_back(items);
+	ani = new CAnimation(1000);
+	ani->Add(80004);
+	animations->Add(8004, ani);
+	ani = new CAnimation(1000);		//DartsItem Left
+	ani->Add(800041);
+	animations->Add(80041, ani);
 
 	//add fire enemy
 	LPDIRECT3DTEXTURE9 texFire = textures->Get(ID_TEX_FIRE);
 	sprites->Add(4001, 0, 0, 16, 31, texFire);
 	sprites->Add(4002, 16, 0, 31, 31, texFire);
-	fire = new CFire(items);
-	ani = new CAnimation(200);
-	ani->Add(4001);
-	ani->Add(4002);
-	animations->Add(40, ani);
-	fire->AddAnimation(40);
-	fire->SetPosition(70.0f, Y_SOILD-30);
-	objects.push_back(fire);
+	
+	for (UINT i = 0; i < 4; i++) {
+		//random items type
+		int itemType = rand() % (5) + 20;
+	
+		CItems* items = new CItems(70.0f + 150 * i, Y_SOILD - 30, itemType);
+		items->AddAnimation(7000);
+		items->AddAnimation(8003);
+		items->AddAnimation(8004);
+		objects.push_back(items);
+
+		CFire* fire = new CFire(items);
+		ani = new CAnimation(200);
+		ani->Add(4001);
+		ani->Add(4002);
+		animations->Add(40, ani);
+		fire->AddAnimation(40);
+		fire->SetPosition(70.0f + 150*i, Y_SOILD - 30);
+		objects.push_back(fire);
+	}
 
 	objects.push_back(simon);
 
@@ -412,7 +449,7 @@ void LoadResources()
 		CBrick* brick = new CBrick();
 		brick->AddAnimation(601);
 		//brick->x -= 15;
-		brick->SetPosition(-BRICK_BBOX_WIDTH + 1.0f, Y_SOILD - 10 * i);		
+		brick->SetPosition(-BRICK_BBOX_WIDTH, Y_SOILD - 10 * i);		
 		objects.push_back(brick);
 	}
 	
@@ -420,7 +457,7 @@ void LoadResources()
 		//wall right
 		CBrick* brick = new CBrick();
 		brick->AddAnimation(601);
-		brick->SetPosition(750.0f, Y_SOILD - 10 * i);
+		brick->SetPosition(760.0f, Y_SOILD - 10 * i);
 		objects.push_back(brick);
 	}
 	

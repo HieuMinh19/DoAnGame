@@ -12,7 +12,7 @@ void CFire::Render(float &x_cam, float &y_cam)
 	/*if (state == FIRE_STATE_DIE) {
 		ani = FIRE_ANI_DIE;
 	}*/
-	//DebugOut(L"x_item: %f\n", x-x_cam);
+	
 	
 	animations[ani]->Render(x-x_cam, y-y_cam);
 	if(this->state != STATE_DIE)
@@ -51,6 +51,7 @@ void CFire::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state == STATE_DIE) {	
 		this->item->setActive(true);
 		this->item->canUpdate = true;
+		this->canUpdate = false;
 		x -= 1000;
 	}
 }

@@ -4,14 +4,28 @@ CItems::CItems()
 {
 	//random items
 	srand((unsigned)time(0));
-	itemType = rand() % (23 - 20 + 1) + 20;
-	DebugOut(L"type: %d\n", itemType);
+	itemType = rand() % (5) + 20;
 
 	coType = ITEM_TYPE;
 	isActive = false;
 	vy = ITEM_GRAVITY;
 	listCollisionType.push_back(BRICK_TYPE);
 	canUpdate = false;
+	//timeLive = GetTickCount();
+}
+
+CItems::CItems(float x, float y, int type)
+{
+	this->x = x;
+	this->y = y;
+	this->itemType = type;
+
+	coType = ITEM_TYPE;
+	isActive = false;
+	vy = ITEM_GRAVITY;
+	listCollisionType.push_back(BRICK_TYPE);
+	canUpdate = false;
+	timeLive = 0;
 }
 
 void CItems::Render(float& x_cam, float& y_cam)
@@ -28,6 +42,10 @@ void CItems::Render(float& x_cam, float& y_cam)
 	case 23:
 		ani = STAR_ANI_ITEM;
 		itemType = STAR_ITEM_TYPE;
+		break;
+	case 24: 
+		ani = DARTS_ANI_ITEM;
+		itemType = DARTS_ITEM_TYPE;
 		break;
 	default:
 		ani = HEALTH_ANI_ITEM;
@@ -60,7 +78,17 @@ void CItems::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (isActive) {
 		CalcPotentialCollisions(coObjects, coEvents);
 	}
+	else {
+		timeLive = 0;
+	}
+		
 	
+
+	if (GetTickCount() - timeLive > TIME_LIVE_ITEM) {
+		this->state = STATE_DIE;
+		this->isActive = false;
+	}
+		
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0){
 		x += dx;
@@ -84,8 +112,10 @@ void CItems::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		delete coEvents[i];
 	}
 
-	if (this->state == STATE_DIE)
+	if (this->state == STATE_DIE) {
 		x -= 1000;
+	}
+		
 
 }
 
