@@ -4,7 +4,7 @@
 #include "MorningStar.h"
 #include "Brick.h"
 #include "Items.h"
-
+#include "DartsItem.h"
 
 #define SIMON_WALKING_SPEED		0.1f 
 //0.1f
@@ -47,7 +47,7 @@ class CSimon : public CGameObject
 	DWORD attactTime;
 	CMorningstar* morningStar;	
 	int subWeaponType;
-	CItems* subWeapon;
+
 public:
 	int isAttact;
 	CSimon(CMorningstar* morningStar);
@@ -56,7 +56,6 @@ public:
 	void SetState(int state);
 	void StartAttact();
 	CMorningstar* getMorningStar() { return this->morningStar; }
-	void SetSubWeapon(CItems* subWeapon) { this->subWeapon = subWeapon; }
-	
+	void UsingSubWeapon(vector<LPGAMEOBJECT> & objects);
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 };

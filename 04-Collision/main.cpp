@@ -15,6 +15,7 @@
 #include "MorningStar.h"
 #include "Items.h"
 #include "Global.h"
+#include "CSubWeapon.h"
 
 #define WINDOW_CLASS_NAME L"GameWindow"
 #define MAIN_WINDOW_TITLE L"Castlevania - HieuLe"
@@ -33,6 +34,7 @@
 #define ID_TEX_HEATH_ITEM	800
 #define ID_TEX_STAR_ITEM	803
 #define ID_TEX_DARTS_ITEM	804
+#define ID_TEX_DARTS_ITEM_L 8041
 
 #define SIMON_ANI_IDLE_RIGHT	400
 #define SIMON_ANI_IDLE_LEFT		401 
@@ -81,6 +83,7 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 	case DIK_X:
 		if (game->IsKeyDown(DIK_UP)) {
 			simon->SetState(SIMON_STATE_ATTACT_SUBWEAPON);
+			simon->UsingSubWeapon(objects);
 		}
 		else {
 			weapon->setAttact(simon->nx);
@@ -143,6 +146,7 @@ void LoadResources()
 	textures->Add(ID_TEX_HEATH_ITEM, L"textures\\Resources\\item\\0.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_STAR_ITEM, L"textures\\Resources\\item\\3.2.png", D3DCOLOR_XRGB(255, 0, 255));
 	textures->Add(ID_TEX_DARTS_ITEM, L"textures\\Resources\\item\\4.png", D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_DARTS_ITEM_L, L"textures\\Resources\\weapon\\1.png", D3DCOLOR_XRGB(255, 0, 255));
 
 	CSprites * sprites = CSprites::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
@@ -168,8 +172,11 @@ void LoadResources()
 	sprites->Add(70000, 1, 1, 15, 15, texHeathItem);
 	LPDIRECT3DTEXTURE9 texStarItem = textures->Get(ID_TEX_STAR_ITEM);
 	sprites->Add(80003, 0, 0, 16, 16, texStarItem);
+	
 	LPDIRECT3DTEXTURE9 texDartsItem = textures->Get(ID_TEX_DARTS_ITEM);
 	sprites->Add(80004, 0, 0, 16, 9, texDartsItem);
+	LPDIRECT3DTEXTURE9 texDartsItemL = textures->Get(ID_TEX_DARTS_ITEM_L);
+	sprites->Add(800041, 0, 0, 16, 9, texDartsItem);
 
 	LPANIMATION ani;	
 
@@ -374,6 +381,7 @@ void LoadResources()
 
 	simon->SetPosition(2.0f, 0.0f);
 	
+	
 	// background
 	LPDIRECT3DTEXTURE9 texBG = textures->Get(ID_TEX_BACKGROUND);
 	sprites->Add(70010, 0, 0, 770, 185, texBG);
@@ -391,33 +399,18 @@ void LoadResources()
 	ani = new CAnimation(FRAME_LASTED);
 	ani->Add(80003);
 	animations->Add(8003, ani);
-	ani = new CAnimation(FRAME_LASTED);
+	ani = new CAnimation(1000);
 	ani->Add(80004);
 	animations->Add(8004, ani);
-
-	//CItems* items = new CItems();
-	//items->AddAnimation(7000);
-	//items->SetPosition(0.0f, Y_SOILD - 25);
-	//
-	//items->AddAnimation(8003);
-	//items->SetPosition(0.0f, Y_SOILD - 25);
-	//
-	//objects.push_back(items);
-	//end items
+	ani = new CAnimation(1000);		//DartsItem Left
+	ani->Add(800041);
+	animations->Add(80041, ani);
 
 	//add fire enemy
 	LPDIRECT3DTEXTURE9 texFire = textures->Get(ID_TEX_FIRE);
 	sprites->Add(4001, 0, 0, 16, 31, texFire);
 	sprites->Add(4002, 16, 0, 31, 31, texFire);
-	/*fire = new CFire(items);
-	ani = new CAnimation(200);
-	ani->Add(4001);
-	ani->Add(4002);
-	animations->Add(40, ani);
-	fire->AddAnimation(40);
-	fire->SetPosition(70.0f, Y_SOILD-30);
-	objects.push_back(fire);*/
-
+	
 	for (UINT i = 0; i < 4; i++) {
 		//random items type
 		int itemType = rand() % (5) + 20;

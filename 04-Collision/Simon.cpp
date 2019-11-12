@@ -11,6 +11,7 @@ CSimon::CSimon(CMorningstar* morningStar)
 	coType = SIMON_TYPE;
 	listCollisionType.push_back(BRICK_TYPE);
 	listCollisionType.push_back(ITEM_TYPE);
+	subWeaponType = DARTS_ITEM_TYPE;
 
 }
 
@@ -102,11 +103,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					this->morningStar->setLevel(nextMorningStarLevel);
 				}
 				else {
-					if (item->getItemType() == DARTS_ITEM_TYPE) {
-						CItems* subWeapon = new CItems(this->x, this->y, DARTS_ITEM_TYPE);
+				/*	if (item->getItemType() == DARTS_ITEM_TYPE) {
+						CSubWeapon* subWeapon = new CSubWeapon(this->x, this->y, DARTS_ITEM_TYPE);
 						SetSubWeapon(subWeapon);
 						this->subWeapon->itemType = DARTS_SUB_WEAPON;
-					}
+					}*/
 						
 				}
 				item->SetState(STATE_DIE);
@@ -151,8 +152,7 @@ void CSimon::Render(float &x_cam, float &y_cam)
 				morningStar->Render(x_cam, y_cam, animations[ani]->getCurrentFrame(), animations[ani]->getLastFrame());
 			}
 			else {
-				this->subWeapon->nx = this->nx;
-				this->subWeapon->Render(x_cam, y_cam);
+			
 			}
 		}		
 	}
@@ -221,20 +221,30 @@ void CSimon::StartAttact()
 			this->morningStar->SetPosition(x, y);
 		}
 		else {
-			CItems* subWeapon = new CItems(this->x, this->y, DARTS_ITEM_TYPE);
-			SetSubWeapon(subWeapon);
-			this->subWeapon->isActive = true;
-			this->subWeapon->timeLive = GetTickCount();		//make item don't die
-			this->subWeapon->SetPosition(x, y);
+			//CSubWeapon* subWeapon = new CSubWeapon();
+			//SetSubWeapon(subWeapon);
+			//this->subWeapon->isActive = true;
+			//this->subWeapon->timeLive = GetTickCount();		//make item don't die
+			
 		}
 		
 	}
 		 
 }
 
+void CSimon::UsingSubWeapon(vector<LPGAMEOBJECT>& objects)
+{
+	CSubWeapon* SubWeapon = new CSubWeapon();
+	SubWeapon->SetPosition(x, y);
+	SubWeapon->nx = this->nx;
+	SubWeapon->canUpdate = true;
+	objects.push_back(SubWeapon);
+	//SubWeapon->Render(x, y);
+}
+
 void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	left = x + 10;
+	left = x;
 	top = y;
 	right = left + SIMON_BBOX_WIDTH;
 	bottom = y + SIMON_BBOX_HEIGHT;
