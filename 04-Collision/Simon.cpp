@@ -98,18 +98,28 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 			if (dynamic_cast<CItems*>(e->obj)){
 				CItems* item = dynamic_cast<CItems*>(e->obj);
-				if (item->getItemType() == STAR_ITEM_TYPE && this->morningStar->getLevel() < 3) {
-					int nextMorningStarLevel = this->morningStar->getLevel() + 1;
-					this->morningStar->setLevel(nextMorningStarLevel);
+				switch (item->getItemType())
+				{
+				case STAR_ITEM_TYPE:
+					if (this->morningStar->getLevel() < 3) {
+						int nextMorningStarLevel = this->morningStar->getLevel() + 1;
+						this->morningStar->setLevel(nextMorningStarLevel);
+					}
+					break;
+				case DARTS_ITEM_TYPE:
+					this->subWeaponType = DARTS_ITEM_TYPE;
+					break;
+				default:
+					break;
 				}
-				else {
+				
+				
 				/*	if (item->getItemType() == DARTS_ITEM_TYPE) {
 						CSubWeapon* subWeapon = new CSubWeapon(this->x, this->y, DARTS_ITEM_TYPE);
 						SetSubWeapon(subWeapon);
 						this->subWeapon->itemType = DARTS_SUB_WEAPON;
 					}*/
-						
-				}
+				
 				item->SetState(STATE_DIE);
 			}
 		}
@@ -150,9 +160,6 @@ void CSimon::Render(float &x_cam, float &y_cam)
 			if (this->state != SIMON_STATE_ATTACT_SUBWEAPON) {
 				morningStar->setAttact(nx);
 				morningStar->Render(x_cam, y_cam, animations[ani]->getCurrentFrame(), animations[ani]->getLastFrame());
-			}
-			else {
-			
 			}
 		}		
 	}
@@ -219,27 +226,22 @@ void CSimon::StartAttact()
 			animations[ani]->currentFrame = -1;
 			this->morningStar->attactTime = attactTime;
 			this->morningStar->SetPosition(x, y);
-		}
-		else {
-			//CSubWeapon* subWeapon = new CSubWeapon();
-			//SetSubWeapon(subWeapon);
-			//this->subWeapon->isActive = true;
-			//this->subWeapon->timeLive = GetTickCount();		//make item don't die
-			
-		}
-		
+		}		
 	}
 		 
 }
 
 void CSimon::UsingSubWeapon(vector<LPGAMEOBJECT>& objects)
 {
-	CSubWeapon* SubWeapon = new CSubWeapon();
-	SubWeapon->SetPosition(x, y);
-	SubWeapon->nx = this->nx;
-	SubWeapon->canUpdate = true;
-	objects.push_back(SubWeapon);
-	//SubWeapon->Render(x, y);
+	if (subWeaponType != 0) {
+		
+		CSubWeapon* SubWeapon = new CSubWeapon(subWeaponType);
+		SubWeapon->SetPosition(x, y);
+		SubWeapon->nx = this->nx;
+		SubWeapon->canUpdate = true;
+		objects.push_back(SubWeapon);
+	}
+	
 }
 
 void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom)

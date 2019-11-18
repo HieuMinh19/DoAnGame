@@ -1,12 +1,14 @@
 #include "CSubWeapon.h"
 
-CSubWeapon::CSubWeapon()
+CSubWeapon::CSubWeapon(int weaponType)
 {
-	this->AddAnimation(80041);
-	this->AddAnimation(8004);
+	if (weaponType == DARTS_ITEM_TYPE) {
+		this->AddAnimation(80041);
+		this->AddAnimation(8004);
+	}
+	
 	canUpdate = false;
 	listCollisionType.push_back(FIRE_TYPE);
-	weaponType = DARTS_WEAPON;
 	vx = DARTS_SPEED;
 }
 
@@ -22,12 +24,44 @@ void CSubWeapon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
 	
+	if (this->state == STATE_DIE)
+		this->x = -1000;
 
 	x += dx;
-	//x += 0.001;
-	//y = 50;
 
-	DebugOut(L"x: %f\n", x);
+
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+	CalcPotentialCollisions(coObjects, coEvents);
+
+	// No collision occured, proceed normally
+	if (coEvents.size() == 0)
+	{
+		x += dx;
+		y += dy;
+	}
+	else
+	{
+		float min_tx, min_ty, nx = 0, ny;
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+		// block 
+		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bi t to avoid overlapping next frame
+		y += min_ty * dy + ny * 0.4f;
+
+		if (nx != 0) vx = 0;
+		if (ny != 0) vy = 0;
+
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+
+			if (dynamic_cast<CFire*>(e->obj)) {
+				CFire* fire = dynamic_cast<CFire*>(e->obj);
+				fire->SetState(STATE_DIE);
+				this->SetState(STATE_DIE);
+			}
+		}
+	}
 }
 
 void CSubWeapon::Render(float& xCam, float& yCam)
@@ -37,14 +71,6 @@ void CSubWeapon::Render(float& xCam, float& yCam)
 
 	if(canUpdate)
 		animations[ani]->Render(x-xCam, y-yCam);
-}
-
-void CSubWeapon::Render(float& xStart, float& yStart, int nx)
-{
-	/*int ani;
-	ani = (nx > 0) ? DARTS_ANI_FLY_LEFT : DARTS_ANI_FLY_RIGHT;
-
-	animations[ani]->Render(x, y);*/
 }
 
 void CSubWeapon::SetState(int state)
