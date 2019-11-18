@@ -13,10 +13,6 @@
 #define HEALTH_BBOX_WIDTH		16
 #define HEALTH_BBOX_HEIGHT		16
 
-#define HEALTH_ITEM_TYPE		20
-#define STAR_ITEM_TYPE			23
-#define DARTS_ITEM_TYPE			24
-
 #define ITEM_GRAVITY			0.05f
 #define ITEM_SPEED				0.05f;
 
